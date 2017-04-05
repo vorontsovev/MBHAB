@@ -18,28 +18,14 @@
 
 class CController {
 private: 
-  uint8_t _RX;
-  uint8_t _TX;
-  uint8_t _modbusbuffer[64];
-  uint8_t _modbuslength;
-  SoftwareSerial *_serial;
+
   CTaskFactory *_taskFactory;
   CTaskManager *_taskManager;
-  void receiveSerialPacket();
-  void sendSerialPacket(uint8_t* buf, uint8_t len);
-
-  void readDO();
-  void readDI();
-  void readAO();
-  void readAI();
-  void writeDO();
-  void writeAO();
-  void modbusError(uint8_t error);
 
 public: 
   CModbusRegisters registers;
 
-	CController(uint8_t RX, uint8_t TX, uint16_t rate);
+	CController();
 	
 	void run();
 	

@@ -72,11 +72,11 @@ case 0:
       setCrash();
       break;    
 case 1:
-      setMainSupply();
-      break;
-case 2:
       setReserveSupply();
       break;        
+case 2:
+      setMainSupply();
+      break;
     }
     return 0;
   } else {

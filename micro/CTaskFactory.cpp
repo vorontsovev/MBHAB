@@ -27,6 +27,13 @@ CWaterRelay* CTaskFactory::createWaterRelay(void* initdata) {
   return _relay;
 }
 
+CModbusRTUConnector* CTaskFactory::createModbusRTUConnector(void* initdata) {
+  CModbusRTUConnectorInit* data;
+  data = (CModbusRTUConnectorInit*)initdata;
+  CModbusRTUConnector* _modbus = new CModbusRTUConnector(_controller, data->rx, data->tx, data->rate);
+  return _modbus;
+}
+
 /*CWaterCounter* CTaskFactory:: createWaterCounter(String name, JsonObject* root) {
   int port = (*root)["port"];
   CWaterCounter *counter = new CWaterCounter(_controller, name, port);

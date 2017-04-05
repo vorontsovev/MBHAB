@@ -4,10 +4,11 @@
 #include "CDisplay.h"
 #include "CModbusRegisters.h"
 
-CBMP180SensorInit bmp180init = {.type=_CBMP180SENSOR, .period=5000};
-CWaterRelayInit   wrInit = {.type=_CWATERRELAY, .rs_address=0, .cv_port=11, .hv_port=10, .bv_port=9, .bp_port=8};
+CBMP180SensorInit         bmp180init = {.type=_CBMP180SENSOR, .period=5000};
+CWaterRelayInit           wrInit = {.type=_CWATERRELAY, .rs_address=0, .cv_port=11, .hv_port=10, .bv_port=9, .bp_port=8};
+CModbusRTUConnectorInit   mbInit = {.type=_CMODBUSRTUCONNECTOR, .rx=2, .tx=3, .rate=2400};
 
-CController *controller = new CController(2, 3, 2400);
+CController *controller = new CController();
 
 void setup() {
   #ifndef __NODEBUG__
@@ -17,6 +18,7 @@ void setup() {
 
   controller->createTask(&bmp180init);
   controller->createTask(&wrInit);
+  controller->createTask(&mbInit);
 }
 
 void loop() {

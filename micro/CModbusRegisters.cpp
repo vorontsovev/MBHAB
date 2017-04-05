@@ -20,12 +20,7 @@ void CModbusRegisters::reset() {
 boolean CModbusRegisters::isChanged(uint8_t reg) {
   uint8_t _address = reg & 0x3F;
   uint8_t _regtype = reg & 0xC0;
-
-  #ifndef __NODEBUG__
-    Serial.print(F("CHANGE REG="));
-    Serial.println(reg, HEX);
-  #endif
-  
+ 
   switch (_regtype) {
 case MB_COILS:
     return (1==_coils_changed[_address]);
