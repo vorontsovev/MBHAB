@@ -1,6 +1,6 @@
 #include "CWaterRelay.h"
 
-CWaterRelay::CWaterRelay(CController* controller, String name, uint8_t portColdWater, uint8_t rs_address, uint8_t portHotWater, uint8_t portBoilerWater, uint8_t portBoilerVoltage):CTask(controller, name) {
+CWaterRelay::CWaterRelay(CController* controller, uint8_t portColdWater, uint8_t rs_address, uint8_t portHotWater, uint8_t portBoilerWater, uint8_t portBoilerVoltage):CTask(controller) {
   _controller = controller;
   _rs_address = rs_address;
   

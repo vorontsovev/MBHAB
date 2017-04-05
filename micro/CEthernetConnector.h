@@ -16,7 +16,7 @@ class CEthernetConnector : public CTask {
 private:
   EthernetServer* _server;  
 public: 
-  CEthernetConnector(CController* controller, String name);
+  CEthernetConnector(CController* controller);
   void run();
 };
 

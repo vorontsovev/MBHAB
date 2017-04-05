@@ -1,7 +1,7 @@
 
 #include "CWaterCounter.h"
 
-CWaterCounter::CWaterCounter(CController* controller, String name, int port):CSensor(controller, name, 50) {
+CWaterCounter::CWaterCounter(CController* controller, uint8_t port):CSensor(controller, 50) {
   _port = port;
   _counter = 255;
   _drebezg = 0;
@@ -36,9 +36,4 @@ void CWaterCounter::poll() {
   }
 }
 
-String CWaterCounter::getValue(String name) {
-  if (name.equals("C")) {
-    return String(_counter);
-  }
-}
 

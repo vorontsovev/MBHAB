@@ -4,35 +4,26 @@
 #ifndef _CBMP180SENSOR_H
 #define _CBMP180SENSOR_H
 
+#define _CBMP180SENSOR 0x0001
+
 #include <Arduino.h>
 #include "CSensor.h"
 #include "CController.h"
 #include <SFE_BMP180.h>
 #include <Wire.h>
 
-const char BMP180Sensor[] = "CBMP180Sensor";
+struct CBMP180SensorInit {
+  uint16_t type;
+  uint16_t period;
+};
 
 class CBMP180Sensor: public CSensor {
 private: 
   SFE_BMP180 *_BMP180;
   double _T;
 public: 
-	
-	CBMP180Sensor(CController* controller, String name, int period);
-	
-	String get(String property);
-	
-	bool set(String JSON);
-	
-	bool init(String JSON);
-	
+	CBMP180Sensor(CController* controller, uint16_t period);
 	void poll();
-	
-	String getProperties();
-  
-  String getValue(String name);
-  uint16_t readAI(uint16_t address, long* res);
- 
 };
 
 #endif //_CBMP180SENSOR_H

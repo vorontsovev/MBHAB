@@ -11,32 +11,23 @@
 #define _CSENSOR_H
 
 #include <Arduino.h>
-#include "CHandleEvent.h"
 #include <StandardCplusplus.h>
 #include <list>
 
 class CSensor: public CTask, public CJSONGate {
 private: 
-  int _period;
-  long _counter;
-  std::list <CHandleEvent*> _handleEvents;
-  std::list <CHandleEvent*>::iterator _it;  
+  uint16_t _period;
+  uint32_t _counter;
 protected:  
   long _poll;
 public: 
-	CSensor(CController* controller, String name, int period);
-  void registerHandleEvent(CHandleEvent* handleEvent);
-	
-	int getPeriod();
-	
+	CSensor(CController* controller, uint16_t period);
+
+	uint16_t getPeriod();
 	void run();
-  void handleEvents();
-	
 	virtual void poll();
 	
-  long getLastPoll();
-
-  virtual String getValue(String name);
+  uint32_t getLastPoll();
 };
 
 #endif //_CSENSOR_H

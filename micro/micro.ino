@@ -4,6 +4,8 @@
 #include "CDisplay.h"
 #include "CModbusRegisters.h"
 
+const CBMP180SensorInit bmp180init = {.type=_CBMP180SENSOR, .period=5000};
+
 const char config[] = "{""type"":""CBMP180Sensor"",""name"":""TEMP1"",""period"":5000}";
 //const char config2[] = "{""type"":""CEthernetConnector"",""name"":""ETH0""}";
 //const char config3[] = "{""type"":""CWaterCounter"",""name"":""COLD"",""port"":0}";
@@ -18,8 +20,8 @@ void setup() {
   #endif
 
 //  CDisplay *lcd = new CDisplay(controller);  
-  controller->createTask(config);
-  controller->createTask(config4);
+//  controller->createTask(config);
+//  controller->createTask(config4);
 
 //  controller->createTask(config3);
 //  lcd->attach("WR");

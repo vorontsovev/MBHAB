@@ -47,7 +47,6 @@ boolean checkCRC(uint8_t *buf, int len, uint16_t CRC) {
 CController::CController(uint8_t RX, uint8_t TX, uint16_t rate) {
   _taskFactory = new CTaskFactory(this);
   _taskManager = new CTaskManager();
-  _handleEvent = new CHandleEvent(this);
 
   _serial = new SoftwareSerial(RX, TX);
   _serial->begin(rate);
@@ -269,20 +268,22 @@ void CController::sendSerialPacket(uint8_t* buf, uint8_t len) {
   #endif
 }
 
-void CController::createTask(String JSON) {
-  StaticJsonBuffer<200> jsonBuffer;  
-  JsonObject& root = jsonBuffer.parseObject(JSON);
-  String type = root["type"];
-  String name = root["name"];
+void CController::createTask(void* initdata) {
+  uint16_t _type = *((uint16_t*)initdata);
 
   #ifndef __NODEBUG__
     Serial.print(F("CREATE TASK "));
-    Serial.println(name);      
     Serial.print(F("TYPE="));
-    Serial.println(type);  
+    Serial.println(_type, HEX);  
   #endif
 
-  if (type.equals(BMP180Sensor)) {
+  switch (_type) {
+case _CBMP180SENSOR:
+    _taskManager->addTask(_taskFactory->createBMP180Sensor((CBMP180SensorInit*)initdata));
+    break;
+  }
+  
+/*  if (type.equals(BMP180Sensor)) {
     _taskManager->addTask(_taskFactory->createBMP180Sensor(name, &root));
   } else {
     if (type.equals(WaterCounter))  {
@@ -292,13 +293,9 @@ void CController::createTask(String JSON) {
         _taskManager->addTask(_taskFactory->createWaterRelay(name, &root));
       }
     }
-  }
+  }*/
 }
 
-
-CSensor* CController::getSensorByName(String name) {
-  return _taskManager->getTaskByName(name);
-}
 
 void CController::destroyTask(CTask task) {
 

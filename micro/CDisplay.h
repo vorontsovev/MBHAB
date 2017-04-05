@@ -2,9 +2,9 @@
 #define _CDISPLAY_H
 
 #include <LiquidCrystal_I2C.h>
-#include "CHandleEvent.h"
+#include "CController.h"
 
-const byte symbolG[8] = {
+const uint8_t symbolG[8] = {
  0b11111,
  0b10000,
  0b10000,
@@ -15,7 +15,7 @@ const byte symbolG[8] = {
  0b00000
 };
 
-const byte symbolX[8] = {
+const uint8_t symbolX[8] = {
  0b00000,
  0b10001,
  0b01010,
@@ -26,7 +26,7 @@ const byte symbolX[8] = {
  0b00000
 };
 
-const byte symbolO[8] = {
+const uint8_t symbolO[8] = {
  0b00000,
  0b01110,
  0b10001,
@@ -37,7 +37,7 @@ const byte symbolO[8] = {
  0b00000
 };
 
-const byte symbolT[8] = {
+const uint8_t symbolT[8] = {
  0b00000,
  0b01000,
  0b10100,
@@ -49,12 +49,11 @@ const byte symbolT[8] = {
 };
 
 
-class CDisplay: public CHandleEvent {
+class CDisplay: public CTask {
 private:
   LiquidCrystal_I2C* _lcd;  
 public:  
   CDisplay(CController* controller);
-  void handleEvent(CSensor* sensor);
 };
 
 #endif

@@ -15,13 +15,12 @@ CTaskFactory::CTaskFactory(CController* controller) {
 }
 
 
-CBMP180Sensor* CTaskFactory::createBMP180Sensor(String name, JsonObject* root) {
-  int period = (*root)["period"];
-  CBMP180Sensor *sensor = new CBMP180Sensor(_controller, name, period);
+CBMP180Sensor* CTaskFactory::createBMP180Sensor(void* initdata) {
+  CBMP180Sensor *sensor = new CBMP180Sensor(_controller, ((CBMP180SensorInit*)initdata)->period);
   return sensor;
 }
 
-CWaterCounter* CTaskFactory:: createWaterCounter(String name, JsonObject* root) {
+/*CWaterCounter* CTaskFactory:: createWaterCounter(String name, JsonObject* root) {
   int port = (*root)["port"];
   CWaterCounter *counter = new CWaterCounter(_controller, name, port);
   return counter;
@@ -35,7 +34,7 @@ CWaterRelay* CTaskFactory::createWaterRelay(String name, JsonObject* root) {
   uint8_t _reg_state = (*root)["rs_address"];
   CWaterRelay* _relay = new CWaterRelay(_controller, name, _reg_state, _porthw, _portcw, _portbw, _portbv);
   return _relay;
-}
+}*/
 
 //CEthernetConnector* CTaskFactory::createEthernetConnector(String name, JsonObject* root) {
 //  CEthernetConnector* connector = new CEthernetConnector(_controller, name);

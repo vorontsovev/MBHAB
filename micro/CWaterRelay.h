@@ -26,7 +26,7 @@ protected:
   void boilOn();
   void boilOff();
 public:
-  CWaterRelay(CController* controller, String name, uint8_t rs_address, uint8_t portColdWater, uint8_t portHotWater, uint8_t portBoilerWater, uint8_t portBoilerVoltage);
+  CWaterRelay(CController* controller, uint8_t rs_address, uint8_t portColdWater, uint8_t portHotWater, uint8_t portBoilerWater, uint8_t portBoilerVoltage);
   void onchange();
 };
 

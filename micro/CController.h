@@ -11,7 +11,6 @@
 #include "CTask.h"
 #include "CTaskManager.h"
 #include "CTaskFactory.h"
-#include <ArduinoJson.h>
 #include <SoftwareSerial.h>
 #include "CSensor.h"
 #include "CModbusRegisters.h"
@@ -26,7 +25,6 @@ private:
   SoftwareSerial *_serial;
   CTaskFactory *_taskFactory;
   CTaskManager *_taskManager;
-  CHandleEvent *_handleEvent;
   void receiveSerialPacket();
   void sendSerialPacket(uint8_t* buf, uint8_t len);
 
@@ -49,15 +47,13 @@ public:
 	
 	void setActive();
 
-	void createTask(String JSON);
+	void createTask(void *initdata);
 	
 	void destroyTask(CTask task);
 	
 	void allocatePin();
 	
 	void deallocatePin();
-
-  CSensor* getSensorByName(String name);
 
 };
 
