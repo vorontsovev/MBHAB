@@ -20,24 +20,19 @@ CBMP180Sensor* CTaskFactory::createBMP180Sensor(void* initdata) {
   return sensor;
 }
 
+CWaterRelay* CTaskFactory::createWaterRelay(void* initdata) {
+  CWaterRelayInit* data;
+  data = (CWaterRelayInit*)initdata;
+  CWaterRelay* _relay = new CWaterRelay(_controller, data->rs_address, data->cv_port, data->hv_port, data->bv_port, data->bp_port);
+  return _relay;
+}
+
 /*CWaterCounter* CTaskFactory:: createWaterCounter(String name, JsonObject* root) {
   int port = (*root)["port"];
   CWaterCounter *counter = new CWaterCounter(_controller, name, port);
   return counter;
 }
 
-CWaterRelay* CTaskFactory::createWaterRelay(String name, JsonObject* root) {
-  uint8_t _porthw = (*root)["porthw"];
-  uint8_t _portcw = (*root)["portcw"];
-  uint8_t _portbw = (*root)["portbw"];  
-  uint8_t _portbv = (*root)["portbv"];    
-  uint8_t _reg_state = (*root)["rs_address"];
-  CWaterRelay* _relay = new CWaterRelay(_controller, name, _reg_state, _porthw, _portcw, _portbw, _portbv);
-  return _relay;
 }*/
 
-//CEthernetConnector* CTaskFactory::createEthernetConnector(String name, JsonObject* root) {
-//  CEthernetConnector* connector = new CEthernetConnector(_controller, name);
-//  return connector;
-//}
 

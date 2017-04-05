@@ -279,7 +279,10 @@ void CController::createTask(void* initdata) {
 
   switch (_type) {
 case _CBMP180SENSOR:
-    _taskManager->addTask(_taskFactory->createBMP180Sensor((CBMP180SensorInit*)initdata));
+    _taskManager->addTask(_taskFactory->createBMP180Sensor(initdata));
+    break;
+case _CWATERRELAY:
+    _taskManager->addTask(_taskFactory->createWaterRelay(initdata));
     break;
   }
   

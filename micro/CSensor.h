@@ -4,7 +4,6 @@
 
 
 #include "CTask.h"
-#include "CJSONGate.h"
 #include "CController.h"
 
 #ifndef _CSENSOR_H
@@ -14,7 +13,7 @@
 #include <StandardCplusplus.h>
 #include <list>
 
-class CSensor: public CTask, public CJSONGate {
+class CSensor: public CTask {
 private: 
   uint16_t _period;
   uint32_t _counter;

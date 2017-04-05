@@ -15,6 +15,10 @@ CBMP180Sensor::CBMP180Sensor(CController* controller, uint16_t period):CSensor(c
 }
 
 void CBMP180Sensor::poll() {
+  #ifndef __NODEBUG__
+    Serial.println(F("CBMP180Sensor poll"));
+  #endif
+  
   double temp;
   char status = _BMP180->startTemperature();
   if (status != 0)

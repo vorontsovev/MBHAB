@@ -4,12 +4,8 @@
 #include "CDisplay.h"
 #include "CModbusRegisters.h"
 
-const CBMP180SensorInit bmp180init = {.type=_CBMP180SENSOR, .period=5000};
-
-const char config[] = "{""type"":""CBMP180Sensor"",""name"":""TEMP1"",""period"":5000}";
-//const char config2[] = "{""type"":""CEthernetConnector"",""name"":""ETH0""}";
-//const char config3[] = "{""type"":""CWaterCounter"",""name"":""COLD"",""port"":0}";
-const char config4[] = "{""type"":""CWaterRelay"",""name"":""WR"",""rs_address"":0,""porthw"":11,""portcw"":10,""portbw"":9,""portbv"":8}";
+CBMP180SensorInit bmp180init = {.type=_CBMP180SENSOR, .period=5000};
+CWaterRelayInit   wrInit = {.type=_CWATERRELAY, .rs_address=0, .cv_port=11, .hv_port=10, .bv_port=9, .bp_port=8};
 
 CController *controller = new CController(2, 3, 2400);
 
@@ -19,13 +15,8 @@ void setup() {
     Serial.println(F("DEBUG MODE ON"));
   #endif
 
-//  CDisplay *lcd = new CDisplay(controller);  
-//  controller->createTask(config);
-//  controller->createTask(config4);
-
-//  controller->createTask(config3);
-//  lcd->attach("WR");
-  
+  controller->createTask(&bmp180init);
+  controller->createTask(&wrInit);
 }
 
 void loop() {
