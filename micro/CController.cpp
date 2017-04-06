@@ -47,6 +47,10 @@ case _CWATERRELAY:
 case _CMODBUSRTUCONNECTOR:
     _taskManager->addTask(_taskFactory->createModbusRTUConnector(initdata));
     break;
+case _CWATERCOUNTER:    
+    _taskManager->addTask(_taskFactory->createWaterCounter(initdata));
+case _CWATERDISPLAY:    
+    _taskManager->addTask(_taskFactory->createWaterDisplay(initdata));
   }  
 }
 

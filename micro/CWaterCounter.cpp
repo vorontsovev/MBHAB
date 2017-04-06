@@ -1,17 +1,29 @@
 
 #include "CWaterCounter.h"
 
-CWaterCounter::CWaterCounter(CController* controller, uint8_t port):CSensor(controller, 50) {
+CWaterCounter::CWaterCounter(CController* controller, uint8_t port, uint8_t c_address):CSensor(controller, 50) {
+
+  #ifndef __NODEBUG__
+      Serial.println(F("CREATE CWaterCounter"));
+      Serial.print(F("port="));
+      Serial.println(port);
+      Serial.print(F("address="));
+      Serial.println(c_address);
+  #endif
+    
   _port = port;
-  _counter = 255;
+  _c_address = c_address;
+  _counter = 0;
   _drebezg = 0;
   _prev = analogRead(_port);
   _phase = _prev;
+  _controller->registers.bind(MB_HOLDINGS32, _c_address);
+  _controller->registers.set(_c_address, _counter);  
 }
 
 void CWaterCounter::poll() {
   boolean _curr = analogRead(_port);
-
+/*
   #ifndef __NODEBUG__
     Serial.print("_curr = ");
     Serial.println(_curr);
@@ -20,7 +32,7 @@ void CWaterCounter::poll() {
     Serial.print("_drebezg = ");
     Serial.println(_drebezg);
   #endif
-  
+*/  
   if (_curr != _prev) {
     _drebezg++;
     if (_drebezg > 9) {
@@ -29,6 +41,7 @@ void CWaterCounter::poll() {
       _prev = _curr;
       if (_phase) {
         _counter = _counter + 10;
+        _controller->registers.set(_c_address, _counter);
       }
     }
   } else {

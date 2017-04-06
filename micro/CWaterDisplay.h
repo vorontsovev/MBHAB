@@ -1,8 +1,18 @@
 #ifndef _CDISPLAY_H
 #define _CDISPLAY_H
 
+#define _CWATERDISPLAY 0x0005
+
 #include <LiquidCrystal_I2C.h>
 #include "CController.h"
+
+
+struct CWaterDisplayInit {
+  uint16_t type;
+  uint8_t vs_address;
+  uint8_t cw_address;
+  uint8_t hw_address; 
+};
 
 const uint8_t symbolG[8] = {
  0b11111,
@@ -49,11 +59,12 @@ const uint8_t symbolT[8] = {
 };
 
 
-class CDisplay: public CTask {
+class CWaterDisplay: public CTask {
 private:
   LiquidCrystal_I2C* _lcd;  
 public:  
-  CDisplay(CController* controller);
+  CWaterDisplay(CController* controller, uint8_t vs_address, uint8_t cw_address, uint8_t hw_address);
+  void onchange();
 };
 
 #endif

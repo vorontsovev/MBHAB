@@ -7,6 +7,8 @@
 #include "CWaterCounter.h"
 #include "CWaterRelay.h"
 #include "CModbusRTUConnector.h"
+#include "CWaterCounter.h"
+#include "CWaterDisplay.h"
 
 #ifndef _CTASKFACTORY_H
 #define _CTASKFACTORY_H
@@ -16,6 +18,8 @@
 class CBMP180Sensor;
 class CController;
 class CModbusRTUConnector;
+class CWaterCounter;
+class CWaterDisplay;
 
 class CTaskFactory {
 private: 
@@ -26,6 +30,8 @@ public:
 	CBMP180Sensor* createBMP180Sensor(void* initdata);
   CWaterRelay* createWaterRelay(void* initdata);
   CModbusRTUConnector* createModbusRTUConnector(void* initdata);
+  CWaterCounter* createWaterCounter(void* initdata);
+  CWaterDisplay* createWaterDisplay(void* initdata);
 };
 
 #endif //_CTASKFACTORY_H

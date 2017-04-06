@@ -7,6 +7,7 @@ CModbusRegisters::CModbusRegisters() {
   _holdings_changed.reset();
   _coils_mask.reset();
   _holdings_mask.reset();
+  for (int i=0; i<32;i++) _holdings[i] = 0;
 };
 
 
@@ -157,9 +158,16 @@ uint8_t CModbusRegisters::set(uint8_t address, uint32_t value) {
 
   if (isBinded(MB_HOLDINGS32, address)) {
     uint32_t _regval = _holdings[address] << 16 | _holdings[address+1];
+    #ifndef __NODEBUG__
+      Serial.print(F("regval="));
+      Serial.println(_regval, HEX);    
+      Serial.println(((uint16_t*)(&value))[0], HEX);
+      Serial.println(((uint16_t*)(&value))[1], HEX);      
+    #endif
+
     if (_regval != value) {
-      _holdings[address] = ((uint16_t*)(&value))[0];
-      _holdings[address+1] = ((uint16_t*)(&value))[1];
+      _holdings[address] = ((uint16_t*)(&value))[1];
+      _holdings[address+1] = ((uint16_t*)(&value))[0];
       _holdings_changed[address] = 1;
       _holdings_changed[address+1] = 1;
     }
@@ -199,13 +207,20 @@ uint8_t CModbusRegisters::get(uint8_t address, uint16_t* value) {
 
 uint8_t CModbusRegisters::get(uint8_t address, uint32_t* value) {
   #ifndef __NODEBUG__
-    Serial.println(F("GET HOLDINGS"));
-    Serial.print(F("ADDRESS="));
-    Serial.println(address);    
+    Serial.println(F("GET HOLDINGS32"));
+    Serial.print(F("HOLDINGS["));
+    Serial.print(address);
+    Serial.print(F("]="));    
+    Serial.println(_holdings[address], HEX);        
+    Serial.print(F("HOLDINGS["));
+    Serial.print(address+1);
+    Serial.print(F("]="));    
+    Serial.println(_holdings[address+1], HEX);        
   #endif
 
   if (isBinded(MB_HOLDINGS32, address)) {
-    *value = _holdings[address] << 16 | _holdings[address+1];
+    *value = _holdings[address];
+    *value = *value << 16 | _holdings[address+1];
     return 0;
   }
   return 1;      

@@ -1,10 +1,10 @@
-#include "CDisplay.h"
+#include "CWaterDisplay.h"
 
-CDisplay::CDisplay(CController* controller) : CTask(controller) {
+CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_t cw_address, uint8_t hw_address) : CTask(controller) {
   _lcd = new LiquidCrystal_I2C(0x27,16,2);
 
   #ifndef __NODEBUG__
-      Serial.println(F("LCD SETUP"));
+      Serial.println(F("CREATE CWaterDisplay"));
   #endif
   
   
@@ -28,6 +28,12 @@ CDisplay::CDisplay(CController* controller) : CTask(controller) {
   _lcd->print("BC 00000000 ");
   _lcd->write(3);  
 
+}
+
+void CWaterDisplay::onchange() {
+  if (_controller->registers.isChanged(MB_HOLDINGS | 0x00)) {
+    Serial.println("!!!!!!!!!!!!!!!!! CHANGE");
+  }
 }
 
 
