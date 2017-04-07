@@ -55,6 +55,9 @@ case _CWATERCOUNTER:
 case _CWATERDISPLAY:    
     _taskManager->addTask(_taskFactory->createWaterDisplay(initdata));
     break;
+case _CWATCHDOG:    
+    _taskManager->addTask(_taskFactory->createWatchdog(initdata));
+    break;
   }  
 }
 

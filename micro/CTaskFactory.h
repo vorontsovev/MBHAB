@@ -9,6 +9,7 @@
 #include "CModbusRTUConnector.h"
 #include "CWaterCounter.h"
 #include "CWaterDisplay.h"
+#include "CWatchdog.h"
 
 #ifndef _CTASKFACTORY_H
 #define _CTASKFACTORY_H
@@ -20,6 +21,7 @@ class CController;
 class CModbusRTUConnector;
 class CWaterCounter;
 class CWaterDisplay;
+class CWatchdog;
 
 class CTaskFactory {
 private: 
@@ -32,6 +34,7 @@ public:
   CModbusRTUConnector* createModbusRTUConnector(void* initdata);
   CWaterCounter* createWaterCounter(void* initdata);
   CWaterDisplay* createWaterDisplay(void* initdata);
+  CWatchdog* createWatchdog(void* initdata);
 };
 
 #endif //_CTASKFACTORY_H

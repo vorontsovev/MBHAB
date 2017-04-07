@@ -49,6 +49,13 @@ CWaterDisplay* CTaskFactory::createWaterDisplay(void* initdata) {
   return _waterdisplay;
 }
 
+CWatchdog* CTaskFactory::createWatchdog(void* initdata) {
+  CWatchdogInit* data;
+  data = (CWatchdogInit*)initdata;
+  CWatchdog* wd = new CWatchdog(_controller, data->address, 0);
+  return wd;
+}
+
 
 
 
