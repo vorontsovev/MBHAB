@@ -62,6 +62,9 @@ const uint8_t symbolT[8] = {
 class CWaterDisplay: public CTask {
 private:
   LiquidCrystal_I2C* _lcd;  
+  void writeChar(uint8_t x, uint8_t y, uint8_t ch);
+  void drawValveState(uint16_t valveState);
+  void drawCounter(uint8_t y, uint32_t value);
 public:  
   CWaterDisplay(CController* controller, uint8_t vs_address, uint8_t cw_address, uint8_t hw_address);
   void onchange();

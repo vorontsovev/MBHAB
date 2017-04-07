@@ -1,9 +1,6 @@
 //#define __NODEBUG__
 
 #include "CController.h"
-#include "CDisplay.h"
-#include "CModbusRegisters.h"
-
 
 CController *controller = new CController();
 

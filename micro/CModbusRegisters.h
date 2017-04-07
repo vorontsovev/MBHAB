@@ -21,6 +21,7 @@ private:
 public:
   CModbusRegisters();
   
+  bool isChanged();
   bool isChanged(uint8_t reg);
 
   uint8_t set(uint8_t address, bool value);

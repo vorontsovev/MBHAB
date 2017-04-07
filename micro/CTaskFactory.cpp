@@ -49,12 +49,6 @@ CWaterDisplay* CTaskFactory::createWaterDisplay(void* initdata) {
   return _waterdisplay;
 }
 
-/*CWaterCounter* CTaskFactory:: createWaterCounter(String name, JsonObject* root) {
-  int port = (*root)["port"];
-  CWaterCounter *counter = new CWaterCounter(_controller, name, port);
-  return counter;
-}
 
-}*/
 
 

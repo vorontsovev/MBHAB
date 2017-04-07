@@ -12,6 +12,7 @@
 
 class CTaskManager {
 private:
+    uint8_t _counter;
     std::list <CTask*> _tasks;
     std::list <CTask*>::iterator _it;
 public: 

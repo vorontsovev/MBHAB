@@ -23,16 +23,7 @@ CWaterCounter::CWaterCounter(CController* controller, uint8_t port, uint8_t c_ad
 
 void CWaterCounter::poll() {
   boolean _curr = analogRead(_port);
-/*
-  #ifndef __NODEBUG__
-    Serial.print("_curr = ");
-    Serial.println(_curr);
-    Serial.print("_prev = ");
-    Serial.println(_prev);
-    Serial.print("_drebezg = ");
-    Serial.println(_drebezg);
-  #endif
-*/  
+
   if (_curr != _prev) {
     _drebezg++;
     if (_drebezg > 9) {

@@ -17,7 +17,7 @@ CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_
   _lcd->setCursor(0, 0);
   _lcd->write(2);
    
-  _lcd->print(" XBC 00000000 ");
+  _lcd->print(F(" XBC 00000000 "));
 
   _lcd->write(2);
 
@@ -30,9 +30,54 @@ CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_
 
 }
 
+void CWaterDisplay::writeChar(uint8_t x, uint8_t y, uint8_t ch) {
+  _lcd->setCursor(x, y);
+  _lcd->write(ch);
+}
+
+void CWaterDisplay::drawCounter(uint8_t y, uint32_t value) {
+  char _counter[8];
+  sprintf(_counter, "%08d", value);
+  _lcd->setCursor(6, y);
+  _lcd->print(_counter);
+}
+
+void CWaterDisplay::drawValveState(uint16_t valveState) {
+  switch (valveState) {
+case 0:
+    writeChar(0, 0, 1);
+    writeChar(0, 1, 1);    
+    writeChar(15, 0, 1);
+    break;            
+case 1:
+    writeChar(0, 0, 2);
+    writeChar(0, 1, 1);    
+    writeChar(15, 0, 2);
+    break;
+case 2:
+    writeChar(0, 0, 2);
+    writeChar(0, 1, 2);    
+    writeChar(15, 0, 1);
+    break;
+  }
+}
+
 void CWaterDisplay::onchange() {
+  uint32_t _counter;
+  uint16_t _vs;
+  Serial.println(F("CWaterDisplay.onchange"));
+
   if (_controller->registers.isChanged(MB_HOLDINGS | 0x00)) {
-    Serial.println("!!!!!!!!!!!!!!!!! CHANGE");
+    _controller->registers.get(0x00, &_vs);
+    drawValveState(_vs);
+  }
+  if (_controller->registers.isChanged(MB_HOLDINGS32 | 0x01)) {
+    _controller->registers.get(0x01, &_counter);
+    drawCounter(0, _counter);
+  }
+  if (_controller->registers.isChanged(MB_HOLDINGS32 | 0x03)) {
+    _controller->registers.get(0x03, &_counter);
+    drawCounter(1, _counter);
   }
 }
 

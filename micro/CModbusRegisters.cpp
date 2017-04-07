@@ -13,14 +13,32 @@ CModbusRegisters::CModbusRegisters() {
 
 // Сброс статусов об изменении регистров
 void CModbusRegisters::reset() {
+  #ifndef __NODEBUG__
+    Serial.println(F("RESET CHANGE BITS"));
+  #endif
+  
   _coils_changed.reset();
   _holdings_changed.reset();
 }
 
+
+// Возврас статуса изменения для любого регистра
+bool CModbusRegisters::isChanged() {
+  return (_coils_changed.any() | _holdings_changed.any());
+}
+
 // Возврат статуса изменения для регистра
-boolean CModbusRegisters::isChanged(uint8_t reg) {
+bool CModbusRegisters::isChanged(uint8_t reg) {
   uint8_t _address = reg & 0x3F;
   uint8_t _regtype = reg & 0xC0;
+
+  #ifndef __NODEBUG__
+    Serial.println(F("isChanged()"));
+    Serial.print(F("address="));
+    Serial.println(_address, HEX);
+    Serial.print(F("regtype="));
+    Serial.println(_regtype, HEX);
+  #endif
  
   switch (_regtype) {
 case MB_COILS:
@@ -98,7 +116,7 @@ case MB_HOLDINGS32:    //  holding32 bind
 
 uint8_t CModbusRegisters::set(uint8_t address, bool value) {
   #ifndef __NODEBUG__
-    Serial.println(F("SET COIL"));
+    Serial.println(F("SET COILS"));
     Serial.print(F("ADDRESS="));
     Serial.println(address);    
     Serial.print(F("VALUE="));
@@ -110,16 +128,16 @@ uint8_t CModbusRegisters::set(uint8_t address, bool value) {
       _coils[address] = value;
       _coils_changed[address] = 1;
       #ifndef __NODEBUG__
-        Serial.println("COIL CHANGED");
+        Serial.println("COILS CHANGED");
       #endif
     }
     #ifndef __NODEBUG__
-      Serial.println("COIL NOT CHANGED");
+      Serial.println("COILS NOT CHANGED");
     #endif
     return 0;
   }
   #ifndef __NODEBUG__
-    Serial.println("COIL CHANGE CRASH");
+    Serial.println("COILS CHANGE CRASH");
   #endif
 
   return 1;
@@ -127,7 +145,7 @@ uint8_t CModbusRegisters::set(uint8_t address, bool value) {
 
 uint8_t CModbusRegisters::set(uint8_t address, uint16_t value) {
   #ifndef __NODEBUG__
-    Serial.println(F("SET HOLDING"));
+    Serial.println(F("SET HOLDINGS"));
     Serial.print(F("ADDRESS="));
     Serial.println(address);    
     Serial.print(F("VALUE="));
@@ -139,7 +157,7 @@ uint8_t CModbusRegisters::set(uint8_t address, uint16_t value) {
       _holdings[address] = value;
       _holdings_changed[address] = 1;
       #ifndef __NODEBUG__
-        Serial.println("COIL CHANGED");
+        Serial.println("HOLDINGS CHANGED");
       #endif
     }
     return 0;

@@ -12,8 +12,10 @@ CController::CController() {
 
 void CController::run() {
   _taskManager->run();
-  _taskManager->onchange();
-  registers.reset();
+  if (registers.isChanged()) {
+    _taskManager->onchange();
+    registers.reset();
+  }
 }
 
 
@@ -49,8 +51,10 @@ case _CMODBUSRTUCONNECTOR:
     break;
 case _CWATERCOUNTER:    
     _taskManager->addTask(_taskFactory->createWaterCounter(initdata));
+    break;
 case _CWATERDISPLAY:    
     _taskManager->addTask(_taskFactory->createWaterDisplay(initdata));
+    break;
   }  
 }
 

@@ -18,7 +18,7 @@ private:
   uint16_t _period;
   uint32_t _counter;
 protected:  
-  long _poll;
+  uint32_t _poll;
 public: 
 	CSensor(CController* controller, uint16_t period);
 

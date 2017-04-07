@@ -64,6 +64,10 @@ void CWaterRelay::setCrash() {
 }
 
 void CWaterRelay::onchange() {
+  #ifndef __NODEBUG__
+    Serial.println(F("CWaterRelay::onChange()"));
+  #endif 
+  
   if (_controller->registers.isChanged(MB_HOLDINGS | _rs_address)) {
     uint16_t state;
     _controller->registers.get(_rs_address, &state);
@@ -78,9 +82,6 @@ case 2:
       setMainSupply();
       break;
     }
-    return 0;
-  } else {
-    return 1;    
   }
 }
 
