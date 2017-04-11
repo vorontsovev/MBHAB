@@ -3,7 +3,6 @@
 
 #include "CSensor.h"
 
-#define _CWATERCOUNTER 0x004
 
 struct CWaterCounterInit {
   uint16_t type;

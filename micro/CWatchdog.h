@@ -5,7 +5,6 @@
 #include "CTask.h"
 #include "CController.h"
 
-#define _CWATCHDOG 0x007
 
 struct CWatchdogInit {
   uint16_t type;

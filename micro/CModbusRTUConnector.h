@@ -4,8 +4,6 @@
 #include <SoftwareSerial.h>
 #include "CTask.h"
 
-#define _CMODBUSRTUCONNECTOR  0x0003
-
 struct CModbusRTUConnectorInit {
   uint16_t type;
   uint8_t rx;

@@ -4,8 +4,6 @@
 #ifndef _CWATERRELAY_H
 #define _CWATERRELAY_H
 
-#define _CWATERRELAY 0x0002
-
 struct CWaterRelayInit {
   uint8_t type;
   uint8_t rs_address;

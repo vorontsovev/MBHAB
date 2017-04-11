@@ -56,6 +56,11 @@ CWatchdog* CTaskFactory::createWatchdog(void* initdata) {
   return wd;
 }
 
-
+CRelay* CTaskFactory::createRelay(void* initdata) {
+  CRelayInit* data;
+  data = (CRelayInit*)initdata;
+  CRelay* relay = new CRelay(_controller, data->port, data->address);
+  return relay;
+}
 
 

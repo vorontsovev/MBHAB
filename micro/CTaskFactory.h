@@ -3,6 +3,7 @@
  */
 
 
+#include "CClasses.h"
 #include "CBMP180Sensor.h"
 #include "CWaterCounter.h"
 #include "CWaterRelay.h"
@@ -10,6 +11,7 @@
 #include "CWaterCounter.h"
 #include "CWaterDisplay.h"
 #include "CWatchdog.h"
+#include "CRelay.h"
 
 #ifndef _CTASKFACTORY_H
 #define _CTASKFACTORY_H
@@ -22,6 +24,7 @@ class CModbusRTUConnector;
 class CWaterCounter;
 class CWaterDisplay;
 class CWatchdog;
+class CRelay;
 
 class CTaskFactory {
 private: 
@@ -35,6 +38,7 @@ public:
   CWaterCounter* createWaterCounter(void* initdata);
   CWaterDisplay* createWaterDisplay(void* initdata);
   CWatchdog* createWatchdog(void* initdata);
+  CRelay* createRelay(void* initdata);
 };
 
 #endif //_CTASKFACTORY_H

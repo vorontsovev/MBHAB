@@ -4,7 +4,6 @@
 #ifndef _CBMP180SENSOR_H
 #define _CBMP180SENSOR_H
 
-#define _CBMP180SENSOR 0x0001
 
 #include <Arduino.h>
 #include "CSensor.h"

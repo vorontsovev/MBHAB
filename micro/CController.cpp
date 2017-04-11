@@ -58,6 +58,9 @@ case _CWATERDISPLAY:
 case _CWATCHDOG:    
     _taskManager->addTask(_taskFactory->createWatchdog(initdata));
     break;
+case _CRELAY:
+    _taskManager->addTask(_taskFactory->createRelay(initdata));  
+    break;
   }  
 }
 

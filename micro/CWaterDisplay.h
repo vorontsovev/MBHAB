@@ -1,8 +1,6 @@
 #ifndef _CDISPLAY_H
 #define _CDISPLAY_H
 
-#define _CWATERDISPLAY 0x0005
-
 #include <LiquidCrystal_I2C.h>
 #include "CController.h"
 

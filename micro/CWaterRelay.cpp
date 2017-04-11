@@ -5,7 +5,6 @@ CWaterRelay::CWaterRelay(CController* controller, uint8_t rs_address, uint8_t cv
     Serial.println(F("CREATE CWaterRelay"));
   #endif
 
-  _controller = controller;
   _rs_address = rs_address;
   
   _cv_port = cv_port;
