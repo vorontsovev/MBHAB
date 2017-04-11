@@ -8,6 +8,7 @@
 #define _CWATERDISPLAY          0x0005
 #define _CRELAY                 0x0006
 #define _CWATCHDOG              0x0007
+#define _CTIMER                 0x0008
 
 
 #endif

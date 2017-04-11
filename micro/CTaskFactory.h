@@ -12,6 +12,7 @@
 #include "CWaterDisplay.h"
 #include "CWatchdog.h"
 #include "CRelay.h"
+#include "CTimer.h"
 
 #ifndef _CTASKFACTORY_H
 #define _CTASKFACTORY_H
@@ -25,6 +26,7 @@ class CWaterCounter;
 class CWaterDisplay;
 class CWatchdog;
 class CRelay;
+class CTimer;
 
 class CTaskFactory {
 private: 
@@ -39,6 +41,7 @@ public:
   CWaterDisplay* createWaterDisplay(void* initdata);
   CWatchdog* createWatchdog(void* initdata);
   CRelay* createRelay(void* initdata);
+  CTimer* createTimer(void* initdata);
 };
 
 #endif //_CTASKFACTORY_H

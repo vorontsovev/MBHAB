@@ -63,4 +63,11 @@ CRelay* CTaskFactory::createRelay(void* initdata) {
   return relay;
 }
 
+CTimer* CTaskFactory::createTimer(void* initdata) {
+  CTimerInit* data;
+  data = (CTimerInit*)initdata;
+  CTimer* timer = new CTimer(_controller, data->address, data->timeout);
+  return timer;
+}
+
 

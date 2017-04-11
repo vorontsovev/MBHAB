@@ -61,6 +61,9 @@ case _CWATCHDOG:
 case _CRELAY:
     _taskManager->addTask(_taskFactory->createRelay(initdata));  
     break;
+case _CTIMER:
+    _taskManager->addTask(_taskFactory->createTimer(initdata));  
+    break;
   }  
 }
 
