@@ -11,18 +11,27 @@
 
 class CModbusRegisters {
 private:
+
   std::bitset<32> _coils;
-  uint16_t _holdings[31];
+  uint16_t _holdings[32];
+  uint16_t _low;  
+  uint8_t _address32;
+  bool  _low_writed;
+  
   std::bitset<32> _coils_mask;
   std::bitset<32> _holdings_mask;
+   
   std::bitset<32> _coils_changed;
   std::bitset<32> _holdings_changed;
+  std::bitset<32> _holdings_request_init;  
+    
   bool isBinded(uint8_t regtype, uint8_t address);
 public:
   CModbusRegisters();
   
   bool isChanged();
   bool isChanged(uint8_t reg);
+  bool isWriting(uint8_t reg);
 
   uint8_t set(uint8_t address, bool value);
   uint8_t set(uint8_t address, uint16_t value);
@@ -31,8 +40,13 @@ public:
   uint8_t get(uint8_t address, bool* value);
   uint8_t get(uint8_t address, uint16_t* value);
   uint8_t get(uint8_t address, uint32_t* value);  
+  uint8_t getRequestStatus(uint32_t* reqStatus);
   
   uint8_t bind(uint8_t regtype, uint8_t address);
+
+  void requestInit(uint8_t reg);
+  bool isInited(uint8_t reg);
+
   void reset();
 };
 

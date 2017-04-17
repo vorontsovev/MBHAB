@@ -18,7 +18,8 @@ CWaterCounter::CWaterCounter(CController* controller, uint8_t port, uint8_t c_ad
   _prev = analogRead(_port);
   _phase = _prev;
   _controller->registers.bind(MB_HOLDINGS32, _c_address);
-  _controller->registers.set(_c_address, _counter);  
+  _controller->registers.requestInit(MB_HOLDINGS32 | _c_address);   // Запрос инициализации счетчика от вышестоящей системы
+//  _controller->registers.set(_c_address, _counter);  
 }
 
 void CWaterCounter::poll() {

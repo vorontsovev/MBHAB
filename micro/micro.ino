@@ -13,20 +13,20 @@ CWaterCounterInit         wcInit1 = {.type=_CWATERCOUNTER, .port=1, .c_address=1
 CWaterCounterInit         wcInit2 = {.type=_CWATERCOUNTER, .port=2, .c_address=3};
 CWaterDisplayInit         disInit = {.type=_CWATERDISPLAY, .vs_address=0, .cw_address=1, .hw_address=3};
 CWatchdogInit             wdInit = {.type= _CWATCHDOG, .address=0};
-CTimerInit                timer = {.type= _CTIMER, .address=15, .timeout=1500};
+CTimerInit                timer = {.type= _CTIMER, .address=16, .timeout=1500};
   
   #ifndef __NODEBUG__
     Serial.begin(115200);
     Serial.println(F("DEBUG MODE ON"));
   #endif
 
-  controller->createTask(&wdInit);
-  controller->createTask(&timer);    
-  controller->createTask(&wrInit);
-  controller->createTask(&wcInit1);
-  controller->createTask(&wcInit2);
-  controller->createTask(&disInit);  
   controller->createTask(&mbInit);  
+//  controller->createTask(&wdInit);
+  controller->createTask(&timer);    
+//  controller->createTask(&wrInit);
+//  controller->createTask(&wcInit1);
+//  controller->createTask(&wcInit2);
+//  controller->createTask(&disInit);  
 }
 
 void loop() {

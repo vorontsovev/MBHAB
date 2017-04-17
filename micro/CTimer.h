@@ -16,6 +16,7 @@ private:
   uint16_t _address;
   uint16_t _timeout;
   uint32_t _lastpoll;
+  void update();
 public:
   CTimer(CController* controller, uint16_t address, uint16_t timeout);
   void run();

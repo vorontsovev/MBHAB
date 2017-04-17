@@ -4,6 +4,15 @@
 #include <SoftwareSerial.h>
 #include "CTask.h"
 
+#define MB_CMD_READ_DO              0x01
+#define MB_CMD_READ_DI              0x02
+#define MB_CMD_READ_AO              0x03
+#define MB_CMD_READ_AI              0x04
+#define MB_CMD_WRITE_DO             0x05
+#define MB_CMD_WRITE_AO             0x06
+#define MB_CMD_WRITE_MULTIPLE_DO    0x0F
+#define MB_CMD_WRITE_MULTIPLE_AO    0x10
+
 struct CModbusRTUConnectorInit {
   uint16_t type;
   uint8_t rx;
@@ -27,6 +36,7 @@ private:
   void readAI();
   void writeDO();
   void writeAO();
+  void writeAO32();
   void modbusError(uint8_t error);
 
 public:

@@ -1,6 +1,7 @@
 #include "CModbusRTUConnector.h"
 
 
+
 uint16_t CRC16_2(uint8_t *buf, uint8_t len)
 {  
   uint16_t crc = 0xFFFF;
@@ -62,24 +63,27 @@ void CModbusRTUConnector::run() {
     uint16_t CRC = CRC16_2(_modbusbuffer, _modbuslength-2);
     if (checkCRC(_modbusbuffer, _modbuslength, CRC)) {
       switch (_modbusbuffer[1]) {
-case 1:
+case MB_CMD_READ_DO:
         readDO();
         break;
-case 2:
+case MB_CMD_READ_DI:
         readDI();
         break;
-case 3:
+case MB_CMD_READ_AO:
         readAO();
         break;
-case 4:
+case MB_CMD_READ_AI:
         readAI();
         break;
-case 5:
+case MB_CMD_WRITE_DO:
         writeDO();
         break;
-case 6:
+case MB_CMD_WRITE_AO:
         writeAO();
         break;
+case MB_CMD_WRITE_MULTIPLE_AO:
+        writeAO32();
+        break;        
 default:
         modbusError(1);
         break;
@@ -90,8 +94,28 @@ default:
 
 void CModbusRTUConnector::readDO() {
   uint16_t _count = _modbusbuffer[4] << 8 | _modbusbuffer[5];
+  
+  #ifndef __NODEBUG___
+    Serial.println(F("read DO"));
+    Serial.print(F("address = "));
+    Serial.println(_modbusbuffer[3], HEX);    
+    Serial.print(F("count = "));
+    Serial.println(_count, HEX);    
+  #endif
+  
   if (_count != 1) {
-    modbusError(3);
+    if ((32 == _count) & (32 == _modbusbuffer[3])) {      // Для специального адреса MODBUS 32 интерпретируем команду как запрос статусов инициализации
+      uint32_t _reqStatus;
+      _controller->registers.getRequestStatus(&_reqStatus);
+      _modbusbuffer[2] = 4;
+      _modbusbuffer[3] = ((uint8_t*)(&_reqStatus))[3];
+      _modbusbuffer[4] = ((uint8_t*)(&_reqStatus))[2];
+      _modbusbuffer[5] = ((uint8_t*)(&_reqStatus))[1];      
+      _modbusbuffer[6] = ((uint8_t*)(&_reqStatus))[0];
+      sendSerialPacket(_modbusbuffer, 7);
+    } else {
+      modbusError(3);
+    }
   } else {
     bool _reg;
     if (_controller->registers.get(_modbusbuffer[3], &_reg)) {
@@ -194,6 +218,37 @@ void CModbusRTUConnector::writeAO() {
     sendSerialPacket(_modbusbuffer, _modbuslength-2);
   } else {
     modbusError(0x02);
+  }
+}
+
+
+// Запись аналогового выхода
+void CModbusRTUConnector::writeAO32() {
+#ifndef __NODEBUG___
+  Serial.println(F("write AO32 !!!!!!!!!!!!!!!!!!!!!!!!"));
+#endif
+
+  uint8_t _address = _modbusbuffer[3];
+  uint16_t _len = _modbusbuffer[4] << 8 | _modbusbuffer[5];
+  if (2 == _len) {
+    uint32_t _value;
+    ((uint8_t*)(&_value))[3] = _modbusbuffer[7];
+    ((uint8_t*)(&_value))[2] = _modbusbuffer[8];    
+    ((uint8_t*)(&_value))[1] = _modbusbuffer[9];        
+    ((uint8_t*)(&_value))[0] = _modbusbuffer[10];            
+    
+    if (!_controller->registers.set(_address, _value)) {
+
+    #ifndef __NODEBUG___
+      Serial.print("_value=");
+      Serial.println(_value, HEX);
+    #endif
+      sendSerialPacket(_modbusbuffer, _modbuslength-2);
+    } else {
+      modbusError(0x02);
+    }  
+  } else {
+    modbusError(0x03);    
   }
 }
 
