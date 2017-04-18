@@ -4,7 +4,6 @@
 
 #include "CController.h"
 
-
 CController::CController() {
   _taskFactory = new CTaskFactory(this);
   _taskManager = new CTaskManager();

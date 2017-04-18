@@ -17,7 +17,7 @@ CModbusRegisters::CModbusRegisters() {
 // Сброс статусов об изменении регистров
 void CModbusRegisters::reset() {
   #ifndef __NODEBUG__
-    Serial.println(F("RESET CHANGE BITS"));
+    Serial.println(F("REZET CHANGE BITS"));
   #endif
   
   _coils_changed.reset();
@@ -298,15 +298,24 @@ uint8_t CModbusRegisters::get(uint8_t address, bool* value) {
 }
 
 uint8_t CModbusRegisters::getRequestStatus(uint32_t* reqStatus) {
-  uint8_t _bytecounter = 0;
   uint8_t _bitcounter = 31;
-  *(uint8_t*)(reqStatus)[_bytecounter] = 0;
+  uint32_t _r = 0;
+  
   for (int i = 3; i >= 0; i--) {
     for (int b = 0; b<8; b++) {
-      *(uint8_t*)(reqStatus)[_bytecounter] = (*(uint8_t*)(reqStatus)[_bytecounter] << 1) | _holdings_request_init[_bitcounter];
+      ((uint8_t*)(&_r))[i] = (((uint8_t*)(&_r))[i] << 1) | _holdings_request_init[_bitcounter];
       _bitcounter--;
     }
   }
+  *reqStatus = _r;
+  #ifndef __NODEBUG__
+    for (int i = 0; i < 32; i++) {
+      Serial.print(_holdings_request_init[i]);
+    }
+    Serial.println();
+    Serial.print(F("reqStatus="));
+    Serial.println(_r, BIN);
+  #endif
   return 0;
 }
 

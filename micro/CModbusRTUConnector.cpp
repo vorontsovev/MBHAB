@@ -1,5 +1,17 @@
 #include "CModbusRTUConnector.h"
 
+extern int __bss_end;
+extern void *__brkval;
+
+int memoryFree()
+{
+   int freeValue;
+   if((int)__brkval == 0)
+      freeValue = ((int)&freeValue) - ((int)&__bss_end);
+   else
+      freeValue = ((int)&freeValue) - ((int)__brkval);
+   return freeValue;
+}
 
 
 uint16_t CRC16_2(uint8_t *buf, uint8_t len)
@@ -121,7 +133,7 @@ void CModbusRTUConnector::readDO() {
     if (_controller->registers.get(_modbusbuffer[3], &_reg)) {
       _modbusbuffer[2] = 1;
       _modbusbuffer[3] = _reg;
-      sendSerialPacket(_modbusbuffer, _reg);
+      sendSerialPacket(_modbusbuffer, 4);
     }
   }
 }
@@ -297,8 +309,10 @@ void CModbusRTUConnector::receiveSerialPacket() {
 void CModbusRTUConnector::sendSerialPacket(uint8_t* buf, uint8_t len) {
   uint16_t CRC = CRC16_2(_modbusbuffer, len);
   #ifndef __NODEBUG__    
-    Serial.print("CRC = ");
-    Serial.println(CRC, HEX);
+    Serial.print(F("FREE MEM="));
+    Serial.println(memoryFree(), HEX);
+    Serial.print("LEN = ");
+    Serial.println(len, HEX);
     Serial.print("SER <- ");
   #endif
 
