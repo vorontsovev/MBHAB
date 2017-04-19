@@ -10,8 +10,7 @@
 #define MB_CMD_READ_AI              0x04
 #define MB_CMD_WRITE_DO             0x05
 #define MB_CMD_WRITE_AO             0x06
-#define MB_CMD_WRITE_MULTIPLE_DO    0x0F
-#define MB_CMD_WRITE_MULTIPLE_AO    0x10
+
 
 struct CModbusRTUConnectorInit {
   uint16_t type;
@@ -20,24 +19,33 @@ struct CModbusRTUConnectorInit {
   uint32_t rate;
 };
 
+struct CModbusCommand {
+  uint8_t id;
+  uint8_t command;
+  uint16_t address;
+  uint16_t data;
+  uint16_t crc;
+};
+
 class CModbusRTUConnector : public CTask {
 private:
-  uint8_t _modbusbuffer[64];
-  uint8_t _modbuslength;
+//  uint8_t _modbusbuffer[64];
+//  uint8_t _modbuslength;
+  uint16_t _crc;
 
   SoftwareSerial *_serial;
 
-  void receiveSerialPacket();
-  void sendSerialPacket(uint8_t* buf, uint8_t len);
+  uint8_t receiveSerialPacket(CModbusCommand* cmd);
+  
+  void write(uint8_t* buf, uint8_t len);
+  void beginWrite();
+  void writeCRC();
 
-  void readDO();
-  void readDI();
-  void readAO();
-  void readAI();
-  void writeDO();
-  void writeAO();
-  void writeAO32();
-  void modbusError(uint8_t error);
+  void readDO(CModbusCommand* cmd);
+  void readAO(CModbusCommand* cmd);
+  void writeDO(CModbusCommand* cmd);
+  void writeAO(CModbusCommand* cmd);
+  void modbusError(CModbusCommand* cmd, uint8_t error);
 
 public:
   CModbusRTUConnector(CController* controller, uint8_t rx, uint8_t tx, uint32_t rate);

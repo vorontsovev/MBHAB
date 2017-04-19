@@ -4,7 +4,6 @@
 CModbusRegisters::CModbusRegisters() {
   _coils.reset();
   reset();
-  _holdings_request_init.reset();  
   _coils_mask.reset();
   _holdings_mask.reset();
 
@@ -31,11 +30,11 @@ void CModbusRegisters::requestInit(uint8_t reg) {
 
   switch (_regtype) {
 case MB_HOLDINGS:    
-    _holdings_request_init[_address] = 1;  
+    _coils[_address | 0x20] = 1;  
     break;
 case MB_HOLDINGS32:    
-    _holdings_request_init[_address] = 1;  
-    _holdings_request_init[_address+1] = 1;
+    _coils[_address | 0x20] = 1;  
+    _coils[(_address | 0x20 ) + 1] = 1;
     break;
   }
 }
@@ -50,10 +49,10 @@ case MB_COILS:
     return true;
     break;    
 case MB_HOLDINGS:    
-    return (0 == _holdings_request_init[_address]);  
+    return (0 == _coils[_address | 0x20]);  
     break;
 case MB_HOLDINGS32:    
-    return (0 == _holdings_request_init[_address]);  
+    return (0 == (_coils[_address | 0x20] | _coils[(_address | 0x20) + 1]));  
     break;
   }
 }
@@ -196,7 +195,7 @@ uint8_t CModbusRegisters::set(uint8_t address, uint16_t value) {
       if (_holdings[address] != value) {
         _holdings[address] = value;
         _holdings_changed[address] = 1;
-        _holdings_request_init[address] = 0; // Устанавливаем бит инициализации
+        _coils[address | 0x20] = 0; // Устанавливаем бит инициализации
         #ifndef __NODEBUG__
           Serial.println(F("HOLDINGS CHANGED"));
         #endif
@@ -236,8 +235,8 @@ uint8_t CModbusRegisters::set(uint8_t address, uint16_t value) {
             _holdings_changed[address+1] = 1;
           }
           _low_writed = false;
-          _holdings_request_init[address] = 0; // Устанавливаем бит инициализации
-          _holdings_request_init[address+1] = 0; // Устанавливаем бит инициализации          
+          _coils[address | 0x20] = 0; // Устанавливаем бит инициализации
+          _coils[(address | 0x20)+1] = 0; // Устанавливаем бит инициализации          
           #ifndef __NODEBUG__
             Serial.println(F("HOLDINGS32 CHANGED"));
           #endif
@@ -295,28 +294,6 @@ uint8_t CModbusRegisters::get(uint8_t address, bool* value) {
     return 0;
   }
   return 1;    
-}
-
-uint8_t CModbusRegisters::getRequestStatus(uint32_t* reqStatus) {
-  uint8_t _bitcounter = 31;
-  uint32_t _r = 0;
-  
-  for (int i = 3; i >= 0; i--) {
-    for (int b = 0; b<8; b++) {
-      ((uint8_t*)(&_r))[i] = (((uint8_t*)(&_r))[i] << 1) | _holdings_request_init[_bitcounter];
-      _bitcounter--;
-    }
-  }
-  *reqStatus = _r;
-  #ifndef __NODEBUG__
-    for (int i = 0; i < 32; i++) {
-      Serial.print(_holdings_request_init[i]);
-    }
-    Serial.println();
-    Serial.print(F("reqStatus="));
-    Serial.println(_r, BIN);
-  #endif
-  return 0;
 }
 
 uint8_t CModbusRegisters::get(uint8_t address, uint16_t* value) {
