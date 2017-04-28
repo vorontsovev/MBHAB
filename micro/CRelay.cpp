@@ -26,7 +26,7 @@ void CRelay::off() {
 
 void CRelay::onchange() {
   if (_controller->registers.isChanged(_address)) {
-    _controller->registers.get(_address, &_state);
+    _controller->registers.get(_address, _state);
     handleState();
   }
 }

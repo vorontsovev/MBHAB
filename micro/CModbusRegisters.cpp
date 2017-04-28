@@ -6,17 +6,20 @@ CModbusRegisters::CModbusRegisters() {
   reset();
   _coils_mask.reset();
   _holdings_mask.reset();
+  _need_save.reset();
 
   _low_writed = false;
     
   for (int i=0; i<32;i++) _holdings[i] = 0;
+  bind (MB_COILS, 0x00);
+  set(0x00, false);     // Регистр 0 применяется для индикации наличия связи с вышестоящим оборудованием
 }
 
 
 // Сброс статусов об изменении регистров
 void CModbusRegisters::reset() {
   #ifndef __NODEBUG__
-    Serial.println(F("REZET CHANGE BITS"));
+    Serial.println(F("RESET CHANGE BITS"));
   #endif
   
   _coils_changed.reset();
@@ -30,11 +33,14 @@ void CModbusRegisters::requestInit(uint8_t reg) {
 
   switch (_regtype) {
 case MB_HOLDINGS:    
-    _coils[_address | 0x20] = 1;  
+    _coils[_address | 0x20] = 1;
+    _need_save[_address] = 1;
     break;
 case MB_HOLDINGS32:    
     _coils[_address | 0x20] = 1;  
     _coils[(_address | 0x20 ) + 1] = 1;
+    _need_save[_address] = 1;
+    _need_save[_address+1] = 1;
     break;
   }
 }
@@ -56,6 +62,15 @@ case MB_HOLDINGS32:
     break;
   }
 }
+
+/*bool CModbusRegisters::isNeedSave(uint8_t reg) {
+  uint8_t _address = reg & 0x3F;
+  uint8_t _regtype = reg & 0xC0;
+
+  switch (_regtype) {
+case      
+  }
+}*/
 
 // Возврас статуса изменения для любого регистра
 bool CModbusRegisters::isChanged() {
@@ -235,8 +250,10 @@ uint8_t CModbusRegisters::set(uint8_t address, uint16_t value) {
             _holdings_changed[address+1] = 1;
           }
           _low_writed = false;
+          
           _coils[address | 0x20] = 0; // Устанавливаем бит инициализации
           _coils[(address | 0x20)+1] = 0; // Устанавливаем бит инициализации          
+          
           #ifndef __NODEBUG__
             Serial.println(F("HOLDINGS32 CHANGED"));
           #endif
@@ -282,50 +299,38 @@ uint8_t CModbusRegisters::set(uint8_t address, uint32_t value) {
 }
 
 
-uint8_t CModbusRegisters::get(uint8_t address, bool* value) {
-  #ifndef __NODEBUG__
-    Serial.println(F("GET COILS"));
-    Serial.print(F("ADDRESS="));
-    Serial.println(address);    
-  #endif
-
+uint8_t CModbusRegisters::get(uint8_t address, bool& value) {
   if (isBinded(MB_COILS, address)) {
-    *value = _coils[address];
+    value = _coils[address];
     return 0;
   }
   return 1;    
 }
 
-uint8_t CModbusRegisters::get(uint8_t address, uint16_t* value) {
+uint8_t CModbusRegisters::get(uint8_t address, uint16_t& value) {
   #ifndef __NODEBUG__
-    Serial.println(F("GET HOLDINGS"));
-    Serial.print(F("ADDRESS="));
-    Serial.println(address);    
+    Serial.println(F("GET 16bit REGISTER"));
   #endif
 
   if (isBinded(MB_HOLDINGS, address)) {
-    *value = _holdings[address];
+    value = _holdings[address];
     return 0;
   }
   return 1;    
 }
 
-uint8_t CModbusRegisters::get(uint8_t address, uint32_t* value) {
+uint8_t CModbusRegisters::get(uint8_t address, uint32_t& value) {
   #ifndef __NODEBUG__
-    Serial.println(F("GET HOLDINGS32"));
-    Serial.print(F("HOLDINGS["));
-    Serial.print(address);
-    Serial.print(F("]="));    
-    Serial.println(_holdings[address], HEX);        
-    Serial.print(F("HOLDINGS["));
-    Serial.print(address+1);
-    Serial.print(F("]="));    
-    Serial.println(_holdings[address+1], HEX);        
+    Serial.println(F("GET 32bit REGISTER"));
   #endif
-
   if (isBinded(MB_HOLDINGS32, address)) {
-    *value = _holdings[address];
-    *value = *value << 16 | _holdings[address+1];
+    value = _holdings[address];
+    value = (value) << 16;
+    value = (value) | _holdings[address+1];
+  #ifndef __NODEBUG__
+    Serial.println(value, DEC);
+  #endif
+    
     return 0;
   }
   return 1;      

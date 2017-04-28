@@ -21,8 +21,9 @@ private:
    
   std::bitset<64> _coils_changed;
   std::bitset<32> _holdings_changed;
-  //std::bitset<32> _holdings_request_init;  
-    
+
+  std::bitset<32> _need_save;
+  
   bool isBinded(uint8_t regtype, uint8_t address);
 public:
   std::bitset<64> _coils;
@@ -38,9 +39,9 @@ public:
   uint8_t set(uint8_t address, uint16_t value);
   uint8_t set(uint8_t reg, uint32_t value);
 
-  uint8_t get(uint8_t address, bool* value);
-  uint8_t get(uint8_t address, uint16_t* value);
-  uint8_t get(uint8_t address, uint32_t* value);  
+  uint8_t get(uint8_t address, bool& value);
+  uint8_t get(uint8_t address, uint16_t& value);
+  uint8_t get(uint8_t address, uint32_t& value);  
   
   uint8_t bind(uint8_t regtype, uint8_t address);
 

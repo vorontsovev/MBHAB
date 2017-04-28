@@ -18,9 +18,11 @@ private:
   int _drebezg;
   bool _phase;
   bool _prev;
+  bool _inited;
 public:
   CWaterCounter(CController* controller, uint8_t port, uint8_t c_address);
-  void poll();  
+  void poll();
+  void onchange();
 };
 
 #endif

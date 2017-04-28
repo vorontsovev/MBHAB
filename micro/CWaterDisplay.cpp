@@ -1,6 +1,8 @@
 #include "CWaterDisplay.h"
 
 CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_t cw_address, uint8_t hw_address) : CTask(controller) {
+  _cw_address = cw_address;
+  _hw_address = hw_address;
   _lcd = new LiquidCrystal_I2C(0x27,16,2);
 
   #ifndef __NODEBUG__
@@ -36,8 +38,8 @@ void CWaterDisplay::writeChar(uint8_t x, uint8_t y, uint8_t ch) {
 }
 
 void CWaterDisplay::drawCounter(uint8_t y, uint32_t value) {
-  char _counter[8];
-  sprintf(_counter, "%08d", value);
+  char _counter[12];
+  sprintf(_counter, "%08lu", value);
   _lcd->setCursor(6, y);
   _lcd->print(_counter);
 }
@@ -63,21 +65,26 @@ case 2:
 }
 
 void CWaterDisplay::onchange() {
-  uint32_t _counter;
+  uint32_t _a;
   uint16_t _vs;
   Serial.println(F("CWaterDisplay.onchange"));
 
   if (_controller->registers.isChanged(MB_HOLDINGS | 0x00)) {
-    _controller->registers.get(0x00, &_vs);
+    _controller->registers.get(0x00, _vs);
     drawValveState(_vs);
   }
-  if (_controller->registers.isChanged(MB_HOLDINGS32 | 0x01)) {
-    _controller->registers.get(0x01, &_counter);
-    drawCounter(0, _counter);
+  if (_controller->registers.isChanged(MB_HOLDINGS32 | _cw_address)) {
+    _controller->registers.get(_cw_address, _a);
+    #ifndef __NODEBUG__
+      Serial.print(F("CW_COUNTER="));
+      Serial.print(_a, DEC);
+    #endif
+
+    drawCounter(0, _a);
   }
-  if (_controller->registers.isChanged(MB_HOLDINGS32 | 0x03)) {
-    _controller->registers.get(0x03, &_counter);
-    drawCounter(1, _counter);
+  if (_controller->registers.isChanged(MB_HOLDINGS32 | _hw_address)) {
+    _controller->registers.get(_hw_address, _a);
+    drawCounter(1, _a);
   }
 }
 

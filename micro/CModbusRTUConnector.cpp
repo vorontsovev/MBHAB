@@ -54,7 +54,7 @@ uint16_t swap(uint16_t b) {
   return ((b & 0xFF) << 8) + ((b >> 8) & 0xFF);
 }
 
-CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint8_t rx, uint8_t tx, uint32_t rate):CTask(controller) {
+CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint32_t rate):CTask(controller) {
 
   #ifndef __NODEBUG__
       Serial.println(F("CREATE CModbusRTUConnector"));
@@ -65,16 +65,27 @@ CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint8_t rx, ui
       Serial.print(F("rate="));
       Serial.println(rate);
   #endif
-  
+
+  _init = false;
+  _timeout = timeout;
   _serial = new SoftwareSerial(rx, tx);
   _serial->begin(rate);
+  _last_request = millis();
 }
 
 void CModbusRTUConnector::run() {
+  bool _status;
+  _controller->registers.get(0x00, _status);
+
   if (_serial->available()) {
+    if (_status) {
+      _controller->registers.set(0x00, false);
+    }
+
     CModbusCommand _cmd;
     
     if (0 == receiveSerialPacket(&_cmd)) {
+      _last_request = millis();
 
       #ifndef __NODEBUG__
         Serial.print(F("id="));
@@ -97,10 +108,14 @@ case MB_CMD_READ_DI:
         readDO(&_cmd);
         break;
 case MB_CMD_READ_AO:
-        readAO(&_cmd);
+        if (_init) {
+          readAO(&_cmd);
+        }
         break;
 case MB_CMD_READ_AI:
-        readAO(&_cmd);
+        if (_init) {
+          readAO(&_cmd);
+        }
         break;
 case MB_CMD_WRITE_DO:
         writeDO(&_cmd);
@@ -114,9 +129,20 @@ default:
       }
     }
   }
+  if ((millis() - _last_request) > _timeout) {
+    if (!_status) {
+      _controller->registers.set(MB_COILS | 0x00, true);
+      Serial.println(F("OFFLINE !!!"));
+    }
+  }  
 }
 
 void CModbusRTUConnector::readDO(CModbusCommand* cmd) {
+  _init = true;
+  #ifndef __NODEBUG__  
+    Serial.println(F("CModbusRTUConnector::readDO"));
+  #endif
+    
   beginWrite();
   write((uint8_t*)cmd, 2);      
   uint8_t len = cmd->data >> 3;
@@ -124,12 +150,14 @@ void CModbusRTUConnector::readDO(CModbusCommand* cmd) {
   write(&len, 1);
   uint8_t _bitbyte = 0;
   uint8_t _counter = 0;
+
   for (int i=cmd->address; i<(cmd->address+cmd->data); i++) {
     _bitbyte = _bitbyte | (_controller->registers._coils[i] << _counter);
     _counter++;
-    if (_counter = 8) {
+    if (8 ==_counter) {
       _counter = 0;
       write(&_bitbyte, 1);
+      _bitbyte = 0;
     }
   }
   writeCRC();
@@ -137,6 +165,10 @@ void CModbusRTUConnector::readDO(CModbusCommand* cmd) {
 
 // Чтение аналоговых регистров
 void CModbusRTUConnector::readAO(CModbusCommand* cmd) {
+  #ifndef __NODEBUG__  
+    Serial.println(F("CModbusRTUConnector::readAO"));
+  #endif
+
   beginWrite();
   write((uint8_t*)cmd, 2);      
   uint8_t len = cmd->data << 1;
@@ -151,6 +183,10 @@ void CModbusRTUConnector::readAO(CModbusCommand* cmd) {
 
 // Запись дискретных регистров
 void CModbusRTUConnector::writeDO(CModbusCommand* cmd) {
+  #ifndef __NODEBUG__  
+    Serial.println(F("CModbusRTUConnector::writeDO"));
+  #endif
+
   bool _reg;
   if (0xFF == cmd->data) {
     _reg = true;
@@ -170,6 +206,10 @@ void CModbusRTUConnector::writeDO(CModbusCommand* cmd) {
 
 // Запись аналоговых регистров
 void CModbusRTUConnector::writeAO(CModbusCommand* cmd) {
+  #ifndef __NODEBUG__  
+    Serial.println(F("CModbusRTUConnector::writeAO"));
+  #endif
+
   if (!_controller->registers.set(cmd->address, cmd->data)) {
 
     cmd->address = swap(cmd->address);
@@ -185,6 +225,9 @@ void CModbusRTUConnector::writeAO(CModbusCommand* cmd) {
 
 
 void CModbusRTUConnector::modbusError(CModbusCommand* cmd, uint8_t error) {
+  #ifndef __NODEBUG__
+    Serial.println(F("MODBUS ERROR !!!"));
+  #endif
   cmd->command = cmd->command | 0x80;
   beginWrite();
   write((uint8_t*)cmd, 2);
@@ -262,10 +305,12 @@ void CModbusRTUConnector::write(uint8_t* buf, uint8_t len) {
 }
 
 void CModbusRTUConnector::writeCRC() {
-  _serial->write((uint8_t*)(&_crc)[1], 1);
-  _serial->write((uint8_t*)(&_crc)[0], 1);
+  uint8_t len;
+  len = _serial->write((uint8_t*)&_crc, 2);
   #ifndef __NODEBUG__
-    Serial.println();
+    _crc = swap(_crc);
+    Serial.println(_crc, HEX);  
+    Serial.println(len, HEX);
   #endif
 }
 

@@ -69,7 +69,7 @@ void CWaterRelay::onchange() {
   
   if (_controller->registers.isChanged(MB_HOLDINGS | _rs_address)) {
     uint16_t state;
-    _controller->registers.get(_rs_address, &state);
+    _controller->registers.get(_rs_address, state);
     switch (state) {
 case 0:
       setCrash();
