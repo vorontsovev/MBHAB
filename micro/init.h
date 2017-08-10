@@ -1,0 +1,13 @@
+//#define __NODEBUG__
+
+#define _CWATERSENSOR_INC
+#define _CRELAY_INC
+#define _CTIMER_INC
+#define _CWATERCOUNTER_INC
+#define _CBMP180SENSOR_INC
+#define _CWATCHDOG_INC
+//#define _CMODBUSRTUCONNECTOR_INC
+//#define _CWATERRELAY_INC
+
+//#define _CWATERDISPLAY_INC
+

@@ -1,4 +1,4 @@
-#include "CWatchdog.h"
+#include <CWatchdog.h>
 
 CWatchdog::CWatchdog(CController* controller, uint16_t address, uint16_t interval):CTask(controller) {
   _address = address;

@@ -1,8 +1,7 @@
 #ifndef _CWATERCOUNTER_H
 #define _CWATERCOUNTER_H
 
-#include "CSensor.h"
-
+#include <CController.h>
 
 struct CWaterCounterInit {
   uint16_t type;

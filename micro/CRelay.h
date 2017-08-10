@@ -1,8 +1,7 @@
 #ifndef _CRELAY_H
 #define _CRELAY_H
 
-#include "CTask.h"
-#include "CController.h"
+#include <CController.h>
 
 struct CRelayInit {
  uint16_t type;

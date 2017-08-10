@@ -1,5 +1,4 @@
-
-#include "CWaterCounter.h"
+#include <CWaterCounter.h>
 
 CWaterCounter::CWaterCounter(CController* controller, uint8_t port, uint8_t c_address):CSensor(controller, 50) {
 

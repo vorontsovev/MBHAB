@@ -2,13 +2,13 @@
  * Project Untitled
  */
 
-
-#include "CTask.h"
-#include <StandardCplusplus.h>
-#include <list>
-
 #ifndef _CTASKMANAGER_H
 #define _CTASKMANAGER_H
+
+#include <Arduino.h>
+#include <StandardCplusplus.h>
+#include <list>
+#include "CTask.h"
 
 class CTaskManager {
 private:

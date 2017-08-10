@@ -2,7 +2,7 @@
 #define _CTIMER_H
 
 #include <Time.h>
-#include "CTask.h"
+#include <CController.h>
 
 struct CTimerInit {
   uint16_t type;

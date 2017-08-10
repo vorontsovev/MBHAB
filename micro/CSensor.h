@@ -3,15 +3,14 @@
  */
 
 
-#include "CTask.h"
-#include "CController.h"
-
 #ifndef _CSENSOR_H
 #define _CSENSOR_H
 
 #include <Arduino.h>
 #include <StandardCplusplus.h>
-#include <list>
+#include <bitset>
+#include <CTask.h>
+
 
 class CSensor: public CTask {
 private: 

@@ -2,11 +2,8 @@
  * Project Untitled
  */
 
-#include "CController.h"
-
 #ifndef _CTASK_H
 #define _CTASK_H
-
 
 class CController;
 
@@ -19,7 +16,7 @@ public:
 	CTask(CController *controller);
 	
 	virtual void run();
-  virtual void onchange();
+    virtual void onchange();
 	
 	bool getActive();
 	

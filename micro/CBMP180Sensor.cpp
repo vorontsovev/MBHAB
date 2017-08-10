@@ -1,6 +1,4 @@
-
-
-#include "CBMP180Sensor.h"
+#include <CBMP180Sensor.h>
 
 CBMP180Sensor::CBMP180Sensor(CController* controller, uint16_t period):CSensor(controller, period) {
 

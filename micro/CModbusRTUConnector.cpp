@@ -1,4 +1,4 @@
-#include "CModbusRTUConnector.h"
+#include <CModbusRTUConnector.h>
 
 extern int __bss_end;
 extern void *__brkval;
@@ -54,7 +54,7 @@ uint16_t swap(uint16_t b) {
   return ((b & 0xFF) << 8) + ((b >> 8) & 0xFF);
 }
 
-CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint32_t rate):CTask(controller) {
+CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint8_t re, uint8_t de, uint32_t rate):CTask(controller) {
 
   #ifndef __NODEBUG__
       Serial.println(F("CREATE CModbusRTUConnector"));
@@ -66,6 +66,12 @@ CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint16_t timeo
       Serial.println(rate);
   #endif
 
+  _re = re;
+  _de = de;
+  pinMode(_re, OUTPUT);
+  
+  digitalWrite(_re, LOW);
+  
   _init = false;
   _timeout = timeout;
   _serial = new SoftwareSerial(rx, tx);
@@ -188,12 +194,12 @@ void CModbusRTUConnector::writeDO(CModbusCommand* cmd) {
   #endif
 
   bool _reg;
-  if (0xFF == cmd->data) {
+  if (0xFF00 == cmd->data) {
     _reg = true;
   } else {
     _reg = false;
   }
-  if (_controller->registers.set(cmd->address, _reg)) {
+  if (!_controller->registers.set(cmd->address, _reg)) {
     cmd->address = swap(cmd->address);
     cmd->data = swap(cmd->data);
     beginWrite();
@@ -286,10 +292,14 @@ uint8_t CModbusRTUConnector::receiveSerialPacket(CModbusCommand* cmd) {
 }
 
 void CModbusRTUConnector::beginWrite() {
-  _crc = 0xFFFF;  
+  _crc = 0xFFFF; 
+  digitalWrite(_re, HIGH);
+  delay(20);
+  while (_serial->available()) _serial->read();
   #ifndef __NODEBUG__    
     Serial.print("SER <- ");
   #endif
+  
 }
 
 void CModbusRTUConnector::write(uint8_t* buf, uint8_t len) {
@@ -307,10 +317,13 @@ void CModbusRTUConnector::write(uint8_t* buf, uint8_t len) {
 void CModbusRTUConnector::writeCRC() {
   uint8_t len;
   len = _serial->write((uint8_t*)&_crc, 2);
+  while (_serial->available()) _serial->read();
+  delay(20);
+  digitalWrite(_re, LOW);  
+  
   #ifndef __NODEBUG__
     _crc = swap(_crc);
     Serial.println(_crc, HEX);  
-    Serial.println(len, HEX);
   #endif
 }
 

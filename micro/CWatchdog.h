@@ -2,9 +2,7 @@
 #define _CWATCHDOG_H
 
 #include <avr/wdt.h>
-#include "CTask.h"
-#include "CController.h"
-
+#include <CController.h>
 
 struct CWatchdogInit {
   uint16_t type;

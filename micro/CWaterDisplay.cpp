@@ -1,8 +1,11 @@
-#include "CWaterDisplay.h"
+#include <CWaterDisplay.h>
 
-CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_t cw_address, uint8_t hw_address) : CTask(controller) {
+CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_t bm_address, uint8_t em_address, uint8_t cw_address, uint8_t hw_address) : CTask(controller) {
+  _vs_address = vs_address;
   _cw_address = cw_address;
   _hw_address = hw_address;
+  _bm_address = bm_address;
+  _em_address = em_address;
   _lcd = new LiquidCrystal_I2C(0x27,16,2);
 
   #ifndef __NODEBUG__
@@ -16,20 +19,22 @@ CWaterDisplay::CWaterDisplay(CController* controller, uint8_t vs_address, uint8_
   _lcd->createChar(2, symbolO);  
   _lcd->createChar(3, symbolT);   
   _lcd->backlight();
-  _lcd->setCursor(0, 0);
-  _lcd->write(2);
-   
-  _lcd->print(F(" XBC 00000000 "));
 
-  _lcd->write(2);
+  _lcd->setCursor(2, 0);
+  _lcd->print(F("XBC 00000000 "));
 
-  _lcd->setCursor(0, 1);
-  _lcd->write(1);
-  _lcd->print(" ");
+  _lcd->setCursor(2, 1);
   _lcd->write(0);
   _lcd->print("BC 00000000 ");
-  _lcd->write(3);  
 
+  bool _bm;
+  _controller->registers.get(_bm_address, _bm);
+  drawBoilMode(_bm);
+
+  uint16_t _vs;
+  _controller->registers.get(_vs_address, _vs);
+  drawValveState(_vs);
+  
 }
 
 void CWaterDisplay::writeChar(uint8_t x, uint8_t y, uint8_t ch) {
@@ -42,6 +47,15 @@ void CWaterDisplay::drawCounter(uint8_t y, uint32_t value) {
   sprintf(_counter, "%08lu", value);
   _lcd->setCursor(6, y);
   _lcd->print(_counter);
+}
+
+void CWaterDisplay::drawBoilMode(bool bm) {
+  _lcd->setCursor(15, 1);
+  if (bm) {
+    _lcd->write(3);
+  } else {
+    _lcd->print("-");    
+  }
 }
 
 void CWaterDisplay::drawValveState(uint16_t valveState) {
@@ -67,10 +81,11 @@ case 2:
 void CWaterDisplay::onchange() {
   uint32_t _a;
   uint16_t _vs;
+  bool _bm;
   Serial.println(F("CWaterDisplay.onchange"));
 
-  if (_controller->registers.isChanged(MB_HOLDINGS | 0x00)) {
-    _controller->registers.get(0x00, _vs);
+  if (_controller->registers.isChanged(MB_HOLDINGS | _vs_address)) {
+    _controller->registers.get(_vs_address, _vs);
     drawValveState(_vs);
   }
   if (_controller->registers.isChanged(MB_HOLDINGS32 | _cw_address)) {
@@ -86,6 +101,11 @@ void CWaterDisplay::onchange() {
     _controller->registers.get(_hw_address, _a);
     drawCounter(1, _a);
   }
+  if (_controller->registers.isChanged(MB_COILS | _bm_address)) {
+    _controller->registers.get(_bm_address, _bm);
+    drawBoilMode(_bm);
+  }
+  
 }
 
 

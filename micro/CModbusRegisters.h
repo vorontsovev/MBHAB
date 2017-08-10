@@ -1,8 +1,10 @@
 #ifndef _CMODBUSREGISTERS_H
 #define _CMODBUSREGISTERS_H
 
+#include <Arduino.h>
 #include <StandardCplusplus.h>
 #include <bitset>
+
 
 #define   MB_COILS      0x00
 #define   MB_HOLDINGS   0x40

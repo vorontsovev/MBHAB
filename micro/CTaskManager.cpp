@@ -1,5 +1,4 @@
-#include "CTaskManager.h"
-
+#include <CTaskManager.h>
 
 CTaskManager::CTaskManager() {
   _counter = 0;

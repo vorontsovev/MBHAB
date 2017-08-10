@@ -1,5 +1,4 @@
-#include "CModbusRegisters.h"
-#include <Arduino.h>
+#include <CModbusRegisters.h>
 
 CModbusRegisters::CModbusRegisters() {
   _coils.reset();
@@ -62,15 +61,6 @@ case MB_HOLDINGS32:
     break;
   }
 }
-
-/*bool CModbusRegisters::isNeedSave(uint8_t reg) {
-  uint8_t _address = reg & 0x3F;
-  uint8_t _regtype = reg & 0xC0;
-
-  switch (_regtype) {
-case      
-  }
-}*/
 
 // Возврас статуса изменения для любого регистра
 bool CModbusRegisters::isChanged() {

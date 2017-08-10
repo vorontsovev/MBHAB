@@ -1,8 +1,9 @@
 #ifndef _CMODBUSRTUCONNECTOR_H
 #define _CMODBUSRTUCONNECTOR_H
 
+#include <Arduino.h>
 #include <SoftwareSerial.h>
-#include "CTask.h"
+#include <CController.h>
 
 #define MB_CMD_READ_DO              0x01
 #define MB_CMD_READ_DI              0x02
@@ -11,12 +12,13 @@
 #define MB_CMD_WRITE_DO             0x05
 #define MB_CMD_WRITE_AO             0x06
 
-
 struct CModbusRTUConnectorInit {
   uint16_t type;
   uint16_t timeout;
   uint8_t rx;
   uint8_t tx;
+  uint8_t re;
+  uint8_t de;
   uint32_t rate;
 };
 
@@ -28,12 +30,15 @@ struct CModbusCommand {
   uint16_t crc;
 };
 
+
 class CModbusRTUConnector : public CTask {
 private:
   bool _init;
   uint16_t _crc;
   uint32_t _last_request;
   uint16_t _timeout;
+  uint8_t _re;
+  uint8_t _de;
 
   SoftwareSerial *_serial;
 
@@ -50,7 +55,7 @@ private:
   void modbusError(CModbusCommand* cmd, uint8_t error);
 
 public:
-  CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint32_t rate);
+  CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint8_t re, uint8_t de, uint32_t rate);
   void run();
 };
 

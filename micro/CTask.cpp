@@ -1,14 +1,8 @@
-/**
- * Project Untitled
- */
-
-
 #include "CTask.h"
 
 /**
  * CTask implementation
  */
-
 
 /**
  * @param controller

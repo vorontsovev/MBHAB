@@ -1,6 +1,3 @@
-
-#include "CSensor.h"
-
 /**
  * CSensor implementation
  */
@@ -10,6 +7,9 @@
  * @param controller
  * @param name
  */
+
+#include <CSensor.h>
+
 CSensor::CSensor(CController* controller, uint16_t period):CTask(controller) {
   _period = period;
   _counter = millis();
