@@ -1,8 +1,9 @@
 #ifndef _CTIMER_H
 #define _CTIMER_H
 
-#include <Time.h>
 #include <CController.h>
+#include <Time.h>
+#include <TimeLib.h>
 
 struct CTimerInit {
   uint16_t type;
