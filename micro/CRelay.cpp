@@ -6,6 +6,10 @@ CRelay::CRelay(CController* controller, uint8_t port, uint16_t address):CTask(co
   _address = address;
   _state = false;
   _controller->registers.bind(MB_COILS, _address);
+    #ifndef __NODEBUG__
+      Serial.print("CRelay.Create");
+    #endif
+  
   pinMode(_port, OUTPUT);
   off();
 }
@@ -26,6 +30,10 @@ void CRelay::off() {
 }
 
 void CRelay::onchange() {
+    #ifndef __NODEBUG__
+      Serial.print("CRelay.onchange");
+    #endif
+  
   if (_controller->registers.isChanged(_address)) {
     _controller->registers.get(_address, _state);
     handleState();

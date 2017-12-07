@@ -14,6 +14,7 @@
 
 struct CModbusRTUConnectorInit {
   uint16_t type;
+  uint8_t id;
   uint16_t timeout;
   uint8_t rx;
   uint8_t tx;
@@ -34,6 +35,7 @@ struct CModbusCommand {
 class CModbusRTUConnector : public CTask {
 private:
   bool _init;
+  uint8_t _id;
   uint16_t _crc;
   uint32_t _last_request;
   uint16_t _timeout;
@@ -55,7 +57,7 @@ private:
   void modbusError(CModbusCommand* cmd, uint8_t error);
 
 public:
-  CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint8_t re, uint8_t de, uint32_t rate);
+  CModbusRTUConnector(CController* controller, uint8_t id, uint16_t timeout, int8_t rx, uint8_t tx, uint8_t re, uint8_t de, uint32_t rate);
   void run();
 };
 

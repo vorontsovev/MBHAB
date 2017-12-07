@@ -50,7 +50,7 @@ case VS_MAIN_SUPPLY:
 }
 
 void CWaterRelay::setMainSupply() {
-  setRelays(false, false, true, true);
+  setRelays(false, false, true, false);
   _controller->registers.set(_rs_address, (uint16_t)2);
   _voltageState = VS_OFF;
   _controller->registers.set(_bm_address, false);  
@@ -60,10 +60,11 @@ void CWaterRelay::setReserveSupply() {
   setRelays(false, true, false, true);
   _controller->registers.set(_rs_address, (uint16_t)1);
   _voltageState = VS_ON;
+  _controller->registers.set(_bm_address, true);  
 }
 
 void CWaterRelay::setCrash() {
-  setRelays(true, true, true, true);
+  setRelays(true, true, true, false);
   _controller->registers.set(_rs_address, (uint16_t)0);
   _voltageState = VS_OFF;
   _controller->registers.set(_bm_address, false);
@@ -94,10 +95,10 @@ case 2:
     bool _boilmode;
     _controller->registers.get(_bm_address, _boilmode);
     if ((state == VS_RESERVE_SUPPLY) && (_boilmode)) {
-      digitalWrite(_bp_port, !_boilmode);
+      digitalWrite(_bp_port, _boilmode);
     } else {
       _controller->registers.set(_bm_address, false);
-      digitalWrite(_bp_port, true);
+      digitalWrite(_bp_port, false);
     }
   }
 }

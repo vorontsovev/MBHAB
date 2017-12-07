@@ -39,7 +39,7 @@ CWaterRelay* CTaskFactory::createWaterRelay(void* initdata) {
 CModbusRTUConnector* CTaskFactory::createModbusRTUConnector(void* initdata) {
   CModbusRTUConnectorInit* data;
   data = (CModbusRTUConnectorInit*)initdata;
-  CModbusRTUConnector* _modbus = new CModbusRTUConnector(_controller, data->timeout, data->rx, data->tx, data->re, data->de, data->rate);
+  CModbusRTUConnector* _modbus = new CModbusRTUConnector(_controller, data->id, data->timeout, data->rx, data->tx, data->re, data->de, data->rate);
   return _modbus;
 }
 #endif // _CMODBUSRTUCONNECTOR_INC

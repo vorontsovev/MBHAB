@@ -54,7 +54,25 @@ uint16_t swap(uint16_t b) {
   return ((b & 0xFF) << 8) + ((b >> 8) & 0xFF);
 }
 
-CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint16_t timeout, int8_t rx, uint8_t tx, uint8_t re, uint8_t de, uint32_t rate):CTask(controller) {
+
+void timePrint() {
+  long t = millis();
+  int time=t/1000;
+  if (time/60/60<10) { Serial.print ("0"); }
+  Serial.print (time/60/60);
+  Serial.print (":");
+  if (time/60%60<10) { Serial.print ("0"); }
+  Serial.print ((time/60)%60);
+  Serial.print (":");
+  if (time%60<10) { Serial.print ("0"); }
+  Serial.print (time%60);
+  Serial.print (".");
+  if (t%1000<10) { Serial.print ("00"); } else if (t%1000<100) { Serial.print ("0"); };
+  Serial.print (t%1000);  
+  Serial.print(" ");
+}
+
+CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint8_t id, uint16_t timeout, int8_t rx, uint8_t tx, uint8_t re, uint8_t de, uint32_t rate):CTask(controller) {
 
   #ifndef __NODEBUG__
       Serial.println(F("CREATE CModbusRTUConnector"));
@@ -66,6 +84,7 @@ CModbusRTUConnector::CModbusRTUConnector(CController* controller, uint16_t timeo
       Serial.println(rate);
   #endif
 
+  _id = id;
   _re = re;
   _de = de;
   pinMode(_re, OUTPUT);
@@ -83,6 +102,7 @@ void CModbusRTUConnector::run() {
   bool _status;
   _controller->registers.get(0x00, _status);
 
+
   if (_serial->available()) {
     if (_status) {
       _controller->registers.set(0x00, false);
@@ -91,49 +111,53 @@ void CModbusRTUConnector::run() {
     CModbusCommand _cmd;
     
     if (0 == receiveSerialPacket(&_cmd)) {
-      _last_request = millis();
 
-      #ifndef __NODEBUG__
-        Serial.print(F("id="));
-        Serial.println(_cmd.id, HEX);
-        Serial.print(F("command="));
-        Serial.println(_cmd.command, HEX);
-        Serial.print(F("address="));
-        Serial.println(_cmd.address, HEX);
-        Serial.print(F("data="));
-        Serial.println(_cmd.data, HEX);
-        Serial.print(F("crc="));
-        Serial.println(_cmd.crc, HEX);
-      #endif
+      if (_cmd.id == this->_id) {
 
-      switch (_cmd.command) {
+		#ifndef __NODEBUG__
+			Serial.print(F("id="));
+			Serial.println(_cmd.id, HEX);
+			Serial.print(F("command="));
+			Serial.println(_cmd.command, HEX);
+			Serial.print(F("address="));
+			Serial.println(_cmd.address, HEX);
+			Serial.print(F("data="));
+			Serial.println(_cmd.data, HEX);
+			Serial.print(F("crc="));
+			Serial.println(_cmd.crc, HEX);
+		#endif
+		
+		_last_request = millis();		  
+
+		switch (_cmd.command) {
 case MB_CMD_READ_DO:
-        readDO(&_cmd);
-        break;
+			readDO(&_cmd);
+			break;
 case MB_CMD_READ_DI:
-        readDO(&_cmd);
-        break;
+			readDO(&_cmd);
+			break;
 case MB_CMD_READ_AO:
-        if (_init) {
-          readAO(&_cmd);
-        }
-        break;
+			if (_init) {
+				readAO(&_cmd);
+			}
+			break;
 case MB_CMD_READ_AI:
-        if (_init) {
-          readAO(&_cmd);
-        }
-        break;
+			if (_init) {
+				readAO(&_cmd);
+			}
+			break;
 case MB_CMD_WRITE_DO:
-        writeDO(&_cmd);
-        break;
+			writeDO(&_cmd);
+			break;
 case MB_CMD_WRITE_AO:
-        writeAO(&_cmd);
-        break;
+			writeAO(&_cmd);
+			break;
 default:
-        modbusError(&_cmd, 1);
-        break;
-      }
-    }
+			modbusError(&_cmd, 1);
+			break;
+		}
+	  }
+	}
   }
   if ((millis() - _last_request) > _timeout) {
     if (!_status) {
@@ -146,6 +170,7 @@ default:
 void CModbusRTUConnector::readDO(CModbusCommand* cmd) {
   _init = true;
   #ifndef __NODEBUG__  
+	timePrint();
     Serial.println(F("CModbusRTUConnector::readDO"));
   #endif
     
@@ -167,6 +192,7 @@ void CModbusRTUConnector::readDO(CModbusCommand* cmd) {
     }
   }
   writeCRC();
+  timePrint();
 }
 
 // Чтение аналоговых регистров
@@ -262,7 +288,7 @@ uint8_t CModbusRTUConnector::receiveSerialPacket(CModbusCommand* cmd) {
       _timepoint = millis();
     }
 
-    if (((millis()-_timepoint) > 20) | (8 == _counter)) {
+    if (((millis()-_timepoint) > 60) | (8 == _counter)) {
       
       #ifndef __NODEBUG__  
         Serial.println();
@@ -294,12 +320,7 @@ uint8_t CModbusRTUConnector::receiveSerialPacket(CModbusCommand* cmd) {
 void CModbusRTUConnector::beginWrite() {
   _crc = 0xFFFF; 
   digitalWrite(_re, HIGH);
-  delay(20);
-  while (_serial->available()) _serial->read();
-  #ifndef __NODEBUG__    
-    Serial.print("SER <- ");
-  #endif
-  
+  delay(12);
 }
 
 void CModbusRTUConnector::write(uint8_t* buf, uint8_t len) {
@@ -317,8 +338,7 @@ void CModbusRTUConnector::write(uint8_t* buf, uint8_t len) {
 void CModbusRTUConnector::writeCRC() {
   uint8_t len;
   len = _serial->write((uint8_t*)&_crc, 2);
-  while (_serial->available()) _serial->read();
-  delay(20);
+  delay(12);
   digitalWrite(_re, LOW);  
   
   #ifndef __NODEBUG__
