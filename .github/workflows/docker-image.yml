@@ -30,6 +30,8 @@ jobs:
       run:  sudo ls /root/.arduino15/
     - name: list result3
       run: ls /home/runner/.arduino15/
+    - name: list result4
+      run: ls /home/runner/.arduino15/      
     - uses: actions/upload-artifact@v1
       with:
         name: esp8266-d1-mini-4m.bin
