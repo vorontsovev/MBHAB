@@ -38,10 +38,12 @@ jobs:
       run: ls MyFirstSketch
     - name: list result5
       run: ls MyFirstSketch/build
+    - name: list result6      
+      run: ls /home
     - uses: actions/upload-artifact@v1
       with:
         name: esp8266-d1-mini-4m.bin
-        path: MyFirstSketch/MyFirstSketch.esp8266.d1.bin 
+        path: MyFirstSketch/build/MyFirstSketch.esp8266.d1.bin 
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "/MyFirstSketch/build/MyFirstSketch.esp8266.d1.bin"
