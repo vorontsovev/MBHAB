@@ -19,7 +19,7 @@ jobs:
     - name: install python3
       run: sudo apt-get install -yq python3
     - name: list config
-      run: arduino-cli config dump 
+      run: sudo ./bin/arduino-cli config dump 
     - name: compile
       run: sudo ./bin/arduino-cli compile --fqbn esp8266:esp8266:d1 MyFirstSketch
     - name: list results
