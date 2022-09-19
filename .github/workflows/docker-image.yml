@@ -55,9 +55,9 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: esp8266-d1-mini-4m.bin
-        path: MyFirstSketch/build/MyFirstSketch.esp8266.d1.bin 
+        path: MyFirstSketch/build/esp8266.esp8266.d1.bin 
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "/MyFirstSketch/build/esp8266.esp8266.d1.bin"
+        artifacts: "MyFirstSketch/build/esp8266.esp8266.d1.bin"
         tag: "release"
         token: ${{ secrets.GITHUB_TOKEN }}  
