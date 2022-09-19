@@ -21,7 +21,7 @@ jobs:
     - name: config init
       run: sudo ./bin/arduino-cli config init
     - name: config cp
-      run: sudo cp -f arduino/arduino-cli.yaml ./root/.arduino15/arduino-cli.yaml 
+      run: sudo cp -f arduino/arduino-cli.yaml /root/.arduino15/arduino-cli.yaml 
     - name: configuration file location
       run: sudo ./bin/arduino-cli config dump --verbose
     - name: list config
