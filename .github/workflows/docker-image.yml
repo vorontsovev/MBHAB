@@ -18,6 +18,8 @@ jobs:
       run: sudo ./bin/arduino-cli core install esp8266:esp8266 --additional-urls http://arduino.esp8266.com/stable/package_esp8266com_index.json  
     - name: install python3
       run: sudo apt-get install -yq python3
+    - name: config init
+      run: sudo ./bin/arduino-cli config init
     - name: list config
       run: sudo ./bin/arduino-cli config dump 
     - name: compile
