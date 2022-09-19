@@ -62,4 +62,5 @@ jobs:
       with:
         artifacts: "MyFirstSketch/build/esp8266.esp8266.d1/MyFirstSketch.ino.bin"
         tag: "1.0.1"
+        allowUpdates: "true"
         token: ${{ secrets.GITHUB_TOKEN }}  
