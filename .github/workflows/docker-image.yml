@@ -40,6 +40,8 @@ jobs:
       run: ls MyFirstSketch/build
     - name: list result6      
       run: ls /home
+    - name: list result7
+      run: ls /home/runner      
     - uses: actions/upload-artifact@v1
       with:
         name: esp8266-d1-mini-4m.bin
