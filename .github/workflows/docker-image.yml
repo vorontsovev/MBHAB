@@ -61,5 +61,5 @@ jobs:
     - uses: ncipollo/release-action@v1
       with:
         artifacts: "MyFirstSketch/build/esp8266.esp8266.d1"
-        tag: "release"
+        tag: "1.0.0"
         token: ${{ secrets.GITHUB_TOKEN }}  
