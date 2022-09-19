@@ -26,6 +26,6 @@ jobs:
         path: MyFirstSketch/MyFirstSketch.esp8266.esp8266.d1.bin 
     - uses: ncipollo/release-action@v1
       with:
-        artifacts: "MyFirstSketch/MyFirstSketch.esp8266.esp8266.d1.bin"
+        artifacts: "MyFirstSketch/MyFirstSketch.esp8266.d1.bin"
         tag: "release"
         token: ${{ secrets.GITHUB_TOKEN }}  
