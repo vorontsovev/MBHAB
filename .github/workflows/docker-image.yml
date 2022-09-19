@@ -48,6 +48,10 @@ jobs:
       run: ls /home/runner/work/MBHAB
     - name: list result10
       run: ls /home/runner/work/MBHAB/MBHAB
+    - name: list result11
+      run: ls /home/runner/work/MBHAB/MBHAB/MyFirstSketch
+    - name: list result12
+      run: ls /home/runner/work/MBHAB/MBHAB/MyFirstSketch/build
     - uses: actions/upload-artifact@v1
       with:
         name: esp8266-d1-mini-4m.bin
