@@ -1,0 +1,43 @@
+name: Docker Image CI
+
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: install arduino cli
+      run:  curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
+    - name: MakeSketch
+      run: ./bin/arduino-cli sketch new MyFirstSketch
+    - name: create dir
+      run: mkdir -p /home/runner/.arduino15/packages
+    - name: lib init
+      run: sudo ./bin/arduino-cli core update-index --additional-urls http://arduino.esp8266.com/stable/package_esp8266com_index.json
+    - name: install esp8266
+      run: sudo ./bin/arduino-cli core install esp8266:esp8266 --additional-urls http://arduino.esp8266.com/stable/package_esp8266com_index.json  
+    - name: install python3
+      run: sudo apt-get install -yq python3
+    - name: config init
+      run: sudo ./bin/arduino-cli config init
+    - name: configuration file location
+      run: sudo ./bin/arduino-cli config dump --verbose
+    - name: list config
+      run: sudo ./bin/arduino-cli config dump 
+    - name: compile
+      run: sudo ./bin/arduino-cli compile --fqbn esp8266:esp8266:d1 MyFirstSketch
+    - name: list results1
+      run: ls
+    - name: list results2
+      run:  sudo ls /root/.arduino15/
+    - name: list result3
+      run: ls /home/runner/.arduino15/
+    - uses: actions/upload-artifact@v1
+      with:
+        name: esp8266-d1-mini-4m.bin
+        path: MyFirstSketch/MyFirstSketch.esp8266.d1.bin 
+    - uses: ncipollo/release-action@v1
+      with:
+        artifacts: "MyFirstSketch/MyFirstSketch.esp8266.d1.bin"
+        tag: "release"
+        token: ${{ secrets.GITHUB_TOKEN }}  
