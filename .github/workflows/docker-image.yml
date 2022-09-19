@@ -21,7 +21,7 @@ jobs:
     - name: compile
       run: sudo ./bin/arduino-cli compile --fqbn esp8266:esp8266:d1 MyFirstSketch
     - name: list results
-      run: ls MyFirstSketch
+      run: ls /MyFirstSketch
     - uses: actions/upload-artifact@v1
       with:
         name: esp8266-d1-mini-4m.bin
