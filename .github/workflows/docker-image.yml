@@ -11,7 +11,7 @@ jobs:
     - name: MakeSketch
       run: ./bin/arduino-cli sketch new MyFirstSketch
     - name: create dir
-      run: mkdir -p /home/runner/.arduino15/packages
+      run: mkdir -p /home/runner/.arduino151/packages
     - name: lib init
       run: sudo ./bin/arduino-cli core update-index --additional-urls http://arduino.esp8266.com/stable/package_esp8266com_index.json
     - name: install esp8266
